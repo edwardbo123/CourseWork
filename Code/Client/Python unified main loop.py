@@ -542,22 +542,13 @@ def naked_singles(group):
             tile.set_value(tile.get_dummy_values[0]) # TODO DOUBLE CHECK THIS
 
 
-def hidden_singles(group):
-    values = get_dummy_values_from_tiles(group)
-    for number in range(1, 9):
-        if sum(values).count(number) == 1:
-            for tile in group:
-                if number in tile.get_dummy_values():
-                    tile.set_value(number)
-
-
 def naked_pairs(group):
     # works I think
     values_to_remove = []
     for index, tile in enumerate(group):
         dummy_list = tile.get_dummy_values()
         if dummy_list not in values_to_remove:
-            for value in sum(values_to_remove):
+            for value in sum(values_to_remove, []):
                 if value in dummy_list:
                     tile.set_dummy_values(value)
 
@@ -565,63 +556,64 @@ def naked_pairs(group):
             values_to_remove.append(dummy_list)
 
 
-def hidden_pairs(group):
-    for tile1, tile2 in itertools.combinations(group):
-        shared_values = set(tile1.get_dummy_values()).intersection(tile2.get_dummy_values)
-        if all([sum(get_dummy_values_from_tiles(group)).count(value) == 2 for value in shared_values]):
-            tile1.set_dummy_values_to(shared_values)
-            tile2.set_dummy_values_to(shared_values)
+def get_numbers_appearance_by_index(group):
+    # [[4, 7, 8, 9], [4, 8, 9], [4, 7], [2, 4, 5, 6, 7, 8], [4, 7, 8], [2, 4, 6, 9], [2, 4, 5, 7, 8, 9]]
+    # [[2,5],[4,7,8],[2,4,7,8],[1,5],[2,4,8,9],[1,2],[1,2,9]]
+    # Use for hidden tuples
+    # Discount ones without length 2 for dubs
+    # Separate into blanks and 2 lengths and blanks and three lengths
+    return [[row for row in range(len(group)) if number in group[row]] for number in range(1, 10)]
 
 
-def naked_triples(group):
-    check_333_332(group)
-    check_322(group)
-    check_222(group)
+def new_naked_all(group):
+    numbers_appearance_by_index = get_numbers_appearance_by_index(group)
+    # Hidden Singles
+    lengths = [len(appearances) for appearances in numbers_appearance_by_index]
+    if 1 in lengths:
+        group[numbers_appearance_by_index[lengths.index(1)]].setvalue(lengths.index(1))  # TODO double check all of this
 
-#    for remove in values_to_remove: try to add this here
+    # Hidden Doubles
+    for index, appearances in enumerate(numbers_appearance_by_index):
+        appearances_of_appearances = numbers_appearance_by_index.count(appearances)
+        if appearances_of_appearances == 2 and len(appearances) == 2:
+            for appearance in appearances:
+                group[appearance].set_dummy_values_to[index]
 
+    # Hidden Triples
+    for index, appearances in enumerate(numbers_appearance_by_index):
 
-def check_333_332(group):
-    dummy_values = get_dummy_values_from_tiles(group)
-    values_to_remove = []
-    for tile in group:
-        tile_dummy_values = tile.get_dummy_values()
-        subset_exists = check_for_subset(tile_dummy_values, dummy_values)
-        if len(tile_dummy_values) == 3 and (dummy_values.count(tile_dummy_values) == 3 or
-                                            dummy_values.count(tile_dummy_values) == 2 and subset_exists):
-            values_to_remove.append(tile_dummy_values)
+        if len(appearances) == 3:
+            appearances_of_appearances = numbers_appearance_by_index.count(appearances)
+            if appearances_of_appearances == 3:
+                for appearance in appearances:
+                    group[appearance].set_dummy_values_to[index]
+                break
+            else:
+                subsets = [set(tile).issubset(set(appearances)) for tile in numbers_appearance_by_index].count(True)-1
+            if appearances_of_appearances == 2 and subsets == 1:# set values
+                pass
 
-    for remove in values_to_remove:
-        tile_dummy_values = tile.get_dummy_values()
-        tile_remove_values = list(set(remove).intersection(tile_dummy_values))
-        if tile_dummy_values != remove and tile_remove_values and not set(tile).issubset(tile_remove_values):
-            tile.set_dummy_values(tile_remove_values)
+            if appearances_of_appearances == 1 and subsets == 2:# set values
+                pass
 
+        if len(appearances) == 2:
+            other_indexes = [index_2d_list_condition(numbers_appearance_by_index, appearance ,length_list) for appearance in appearances]
+            other_values = [numbers_appearance_by_index[other_indexes[index][0], 1-other_indexes[index][1]]
+                            for index in range(0,2)]
 
-def check_for_subset(check_value, check_list):
-    for values in check_list:
-        if set(values).issubset(set(check_value)):
-            return True
-    return False
-
-
-def check_222(group):
-    dummy_values = get_dummy_values_from_tiles(group)
-    dummy_2s = [tile for tile in dummy_values if len(tile) == 2]
-    values_to_remove = []
-    for tile in group:
-        tile_dummy_values = tile.get_dummy_values()
-        for value in tile_dummy_values:
-            if sum(dummy_2s).count(value) == 2:
-                #TODO SEND HELP NEXT
-        # 3+ 2x2 2's share 1 value, sum of 2's = 3
-        # 3x2 they values are shared only once between all three
+            if len(other_indexes) == 2 and other_values[0] == other_values[1]:
+                # set values and stuff
 
 
 
+def index_2d_list_condition(list_2d, key, condition):
+    for index, list_1d in enumerate(list_2d):
+        if key in list_1d and condition(list_1d):
+            return [index, list_1d.index(key)]
 
-def hidden_triples(group):
-    pass
+def length_list(target_list, target = 2):
+    return len(target_list) == target
+
 
 
 def check_naked_duplicates(grid):
