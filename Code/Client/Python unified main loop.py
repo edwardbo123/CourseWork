@@ -535,11 +535,12 @@ def basic_dummy_values(grid):
 def get_dummy_values_from_tiles(tiles):
     return [tile.get_dummy_values() for tile in tiles]
 
+# TODO as hidden / naked reverse of each other try to filp the functions some how
 
 def naked_singles(group):
     for tile in group:
         if len(tile.get_dummy_values()) == 1:
-            tile.set_value(tile.get_dummy_values[0]) # TODO DOUBLE CHECK THIS
+            tile.set_value(tile.get_dummy_values[0])  # TODO DOUBLE CHECK THIS
 
 
 def naked_pairs(group):
@@ -557,15 +558,10 @@ def naked_pairs(group):
 
 
 def get_numbers_appearance_by_index(group):
-    # [[4, 7, 8, 9], [4, 8, 9], [4, 7], [2, 4, 5, 6, 7, 8], [4, 7, 8], [2, 4, 6, 9], [2, 4, 5, 7, 8, 9]]
-    # [[2,5],[4,7,8],[2,4,7,8],[1,5],[2,4,8,9],[1,2],[1,2,9]]
-    # Use for hidden tuples
-    # Discount ones without length 2 for dubs
-    # Separate into blanks and 2 lengths and blanks and three lengths
     return [[row for row in range(len(group)) if number in group[row]] for number in range(1, 10)]
 
 
-def new_naked_all(group):
+def new_hidden_all(group):
     numbers_appearance_by_index = get_numbers_appearance_by_index(group)
     # Hidden Singles
     lengths = [len(appearances) for appearances in numbers_appearance_by_index]
@@ -577,33 +573,58 @@ def new_naked_all(group):
         appearances_of_appearances = numbers_appearance_by_index.count(appearances)
         if appearances_of_appearances == 2 and len(appearances) == 2:
             for appearance in appearances:
-                group[appearance].set_dummy_values_to[index]
+                group[appearance].set_dummy_values_to(index)
 
     # Hidden Triples
     for index, appearances in enumerate(numbers_appearance_by_index):
-
-        if len(appearances) == 3:
+        if len(appearances) == 3:  # Could do all iteration after the current index as it already checked behind it
             appearances_of_appearances = numbers_appearance_by_index.count(appearances)
+            # 3 3 3
             if appearances_of_appearances == 3:
+                index_of_appearances = [index] + \
+                          [index2 for index2, value in enumerate(numbers_appearance_by_index[index:]) if value == appearances]
                 for appearance in appearances:
-                    group[appearance].set_dummy_values_to[index]
+                    group[appearance].set_dummy_values_to(index_of_appearances)
+
                 break
             else:
-                subsets = [set(tile).issubset(set(appearances)) for tile in numbers_appearance_by_index].count(True)-1
-            if appearances_of_appearances == 2 and subsets == 1:# set values
-                pass
+                subsets = [set(tile).issubset(set(appearances)) for tile in numbers_appearance_by_index]
+            # 3 3 2
+            if appearances_of_appearances == 2 and subsets.count(True)-1 == 1:
+                index_of_appearances = [index] + \
+                [numbers_appearance_by_index[index:].index(appearances)]
+                subset_index = subsets.index(True)
+                for appearance in appearances:
+                    group[appearance].set_dummy_values_to(index_of_appearances)
+                    if appearance in numbers_appearance_by_index[subset_index]:
+                        group[appearance].set_dummy_values(subset_index)
 
-            if appearances_of_appearances == 1 and subsets == 2:# set values
-                pass
-
+                break
+            # 3 2 2
+            if appearances_of_appearances == 1 and subsets.count(True)-1 == 2:
+                subset_indexes = [index2 for index2, value in enumerate(subsets) if value]
+                for appearance in appearances:
+                    group[appearance].set_dummy_values_to(index)
+                    for subset_index in subset_indexes:
+                        if appearance in numbers_appearance_by_index[subset_index]:
+                            group[appearance].set_dummy_values(subset_index)
+                break
+        # 2 2 2
         if len(appearances) == 2:
-            other_indexes = [index_2d_list_condition(numbers_appearance_by_index, appearance ,length_list) for appearance in appearances]
-            other_values = [numbers_appearance_by_index[other_indexes[index][0], 1-other_indexes[index][1]]
-                            for index in range(0,2)]
+            other_indexes = [index_2d_list_condition(numbers_appearance_by_index, appearance, length_list)
+                             for appearance in appearances]
+            other_values = [numbers_appearance_by_index[(other_indexes[index][0])][1-other_indexes[index][1]]
+                            for index in range(0, 2)]  # TODO doesn't catch all
+            # Doesn't catch when there is another tile that would be taken down to hidden single through this i.e.
+            # one of the values removed only had two copies on at the time
 
             if len(other_indexes) == 2 and other_values[0] == other_values[1]:
-                # set values and stuff
-
+                for appearance in appearances:
+                    group[appearance].set_dummy_value_to(index)
+                    group[appearance].set_dummy_value(other_index for other_index in other_indexes
+                                                      if appearance in numbers_appearance_by_index[other_index] )
+                    group[other_values].set_dummy_value_to(other_indexes)
+                break
 
 
 def index_2d_list_condition(list_2d, key, condition):
@@ -611,12 +632,12 @@ def index_2d_list_condition(list_2d, key, condition):
         if key in list_1d and condition(list_1d):
             return [index, list_1d.index(key)]
 
-def length_list(target_list, target = 2):
+
+def length_list(target_list, target=2):
     return len(target_list) == target
 
 
-
-def check_naked_duplicates(grid):
+def check_naked_hidden_duplicates(grid):
     rows = [[tile for tile in grid.get_row(row)] for row in range(9)]
     columns = [[tile for tile in grid.get_coloumn(column)] for column in range(9)]
     grids_3_x_3 = [[tile for tile in grid.get_grid_3_by_3(grid_3x3)] for grid_3x3 in range(9)]
