@@ -537,66 +537,75 @@ def get_dummy_values_from_tiles(tiles):
 
 # TODO as hidden / naked reverse of each other try to filp the functions some how
 
-def naked_singles(group):
-    for tile in group:
-        if len(tile.get_dummy_values()) == 1:
-            tile.set_value(tile.get_dummy_values[0])  # TODO DOUBLE CHECK THIS
-
-
-def naked_pairs(group):
-    # works I think
-    values_to_remove = []
-    for index, tile in enumerate(group):
-        dummy_list = tile.get_dummy_values()
-        if dummy_list not in values_to_remove:
-            for value in sum(values_to_remove, []):
-                if value in dummy_list:
-                    tile.set_dummy_values(value)
-
-        if len(dummy_list) == 2 and dummy_list in group[index:]:
-            values_to_remove.append(dummy_list)
-
 
 def get_numbers_appearance_by_index(group):
     return [[row for row in range(len(group)) if number in group[row]] for number in range(1, 10)]
 
 
-def new_hidden_all(group):
+def new_hidden_naked_all(group):
     numbers_appearance_by_index = get_numbers_appearance_by_index(group)
-    # Hidden Singles
-    lengths = [len(appearances) for appearances in numbers_appearance_by_index]
+    dummy_values_by_tile = get_dummy_values_from_tiles(group)
+    solve_functions = [hidden_singles, hidden_doubles, hidden_triples]
+    flag = False
+    for function in solve_functions:
+        index, value = function(numbers_appearance_by_index)  # TODO double check all of this
+        if index:
+            flag = True
+        else:
+            value, index = function(dummy_values_by_tile)
+            if index:
+                flag = True
+        if flag:
+            if type(index) == int:
+                group[index].set_value_to(value)
+            else:
+                for count in range(len(index)):
+                    group[index[count]].set_value_to(index[count])
+            break  # If no change set flag
+
+
+def hidden_singles(iter_through):
+    overwrite, value = None, None
+    lengths = [len(appearances) for appearances in iter_through]
     if 1 in lengths:
-        group[numbers_appearance_by_index[lengths.index(1)]].setvalue(lengths.index(1))  # TODO double check all of this
+        overwrite = lengths.index(1)
+        value = lengths.index(1)
+        return overwrite, value
 
-    # Hidden Doubles
-    for index, appearances in enumerate(numbers_appearance_by_index):
-        appearances_of_appearances = numbers_appearance_by_index.count(appearances)
-        if appearances_of_appearances == 2 and len(appearances) == 2:
-            for appearance in appearances:
-                group[appearance].set_dummy_values_to(index)
 
-    # Hidden Triples
-    for index, appearances in enumerate(numbers_appearance_by_index):
+def hidden_doubles(iter_through):
+    overwrite, value = None, None
+    for index, appearances in enumerate(iter_through):
+        index_of_appearances = [index2 for index2, value in iter_through if index2 == appearances]
+        if len(index_of_appearances) == 2 and len(appearances) == 2:
+            overwrite = appearances
+            values = index_of_appearances
+            return [overwrite, values]
+
+
+def hidden_triples(iter_through):
+    # Make it return an argument or pass it through a function where I change the values
+    # as the test is identical just the list to test is different
+    for index, appearances in enumerate(iter_through):
         if len(appearances) == 3:  # Could do all iteration after the current index as it already checked behind it
-            appearances_of_appearances = numbers_appearance_by_index.count(appearances)
+            appearances_of_appearances = iter_through.count(appearances)
             # 3 3 3
             if appearances_of_appearances == 3:
-                index_of_appearances = [index] + \
-                          [index2 for index2, value in enumerate(numbers_appearance_by_index[index:]) if value == appearances]
-                for appearance in appearances:
-                    group[appearance].set_dummy_values_to(index_of_appearances)
-
-                break
+                overwrite = [index] + \
+                          [index2 for index2, value in enumerate(iter_through[index:]) if value == appearances]
+                values = appearances
+                return overwrite, values
             else:
-                subsets = [set(tile).issubset(set(appearances)) for tile in numbers_appearance_by_index]
-            # 3 3 2
+                subsets = [set(tile).issubset(set(appearances)) for tile in iter_through]
+            # 3 3 2 #TODO continue implementing returns
             if appearances_of_appearances == 2 and subsets.count(True)-1 == 1:
                 index_of_appearances = [index] + \
-                [numbers_appearance_by_index[index:].index(appearances)]
+                [iter_through[index:].index(appearances)]
                 subset_index = subsets.index(True)
+
                 for appearance in appearances:
                     group[appearance].set_dummy_values_to(index_of_appearances)
-                    if appearance in numbers_appearance_by_index[subset_index]:
+                    if appearance in iter_through[subset_index]:
                         group[appearance].set_dummy_values(subset_index)
 
                 break
@@ -606,14 +615,14 @@ def new_hidden_all(group):
                 for appearance in appearances:
                     group[appearance].set_dummy_values_to(index)
                     for subset_index in subset_indexes:
-                        if appearance in numbers_appearance_by_index[subset_index]:
+                        if appearance in iter_through[subset_index]:
                             group[appearance].set_dummy_values(subset_index)
                 break
         # 2 2 2
         if len(appearances) == 2:
-            other_indexes = [index_2d_list_condition(numbers_appearance_by_index, appearance, length_list)
+            other_indexes = [index_2d_list_condition(iter_through, appearance, length_list)
                              for appearance in appearances]
-            other_values = [numbers_appearance_by_index[(other_indexes[index][0])][1-other_indexes[index][1]]
+            other_values = [iter_through[(other_indexes[index][0])][1-other_indexes[index][1]]
                             for index in range(0, 2)]  # TODO doesn't catch all
             # Doesn't catch when there is another tile that would be taken down to hidden single through this i.e.
             # one of the values removed only had two copies on at the time
@@ -622,7 +631,7 @@ def new_hidden_all(group):
                 for appearance in appearances:
                     group[appearance].set_dummy_value_to(index)
                     group[appearance].set_dummy_value(other_index for other_index in other_indexes
-                                                      if appearance in numbers_appearance_by_index[other_index] )
+                                                      if appearance in iter_through[other_index] )
                     group[other_values].set_dummy_value_to(other_indexes)
                 break
 
