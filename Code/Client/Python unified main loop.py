@@ -542,10 +542,10 @@ def get_numbers_appearance_by_index(group):
     return [[row for row in range(len(group)) if number in group[row]] for number in range(1, 10)]
 
 
-def new_hidden_naked_all(group):
+def solve_through_tuples(group):
     numbers_appearance_by_index = get_numbers_appearance_by_index(group)
     dummy_values_by_tile = get_dummy_values_from_tiles(group)
-    solve_functions = [hidden_singles, hidden_doubles, hidden_triples]
+    solve_functions = [singles, doubles, triples]
     flag = False
     for function in solve_functions:
         index, value = function(numbers_appearance_by_index)  # TODO double check all of this
@@ -564,7 +564,7 @@ def new_hidden_naked_all(group):
             break  # If no change set flag
 
 
-def hidden_singles(iter_through):
+def singles(iter_through):
     overwrite, value = None, None
     lengths = [len(appearances) for appearances in iter_through]
     if 1 in lengths:
@@ -573,7 +573,7 @@ def hidden_singles(iter_through):
         return overwrite, value
 
 
-def hidden_doubles(iter_through):
+def doubles(iter_through):
     overwrite, value = None, None
     for index, appearances in enumerate(iter_through):
         index_of_appearances = [index2 for index2, value in iter_through if index2 == appearances]
@@ -583,9 +583,10 @@ def hidden_doubles(iter_through):
             return [overwrite, values]
 
 
-def hidden_triples(iter_through):
+def triples(iter_through):
     # Make it return an argument or pass it through a function where I change the values
     # as the test is identical just the list to test is different
+    overwrite, value = None, None
     for index, appearances in enumerate(iter_through):
         if len(appearances) == 3:  # Could do all iteration after the current index as it already checked behind it
             appearances_of_appearances = iter_through.count(appearances)
@@ -595,31 +596,29 @@ def hidden_triples(iter_through):
                           [index2 for index2, value in enumerate(iter_through[index:]) if value == appearances]
                 values = appearances
                 return overwrite, values
+
             else:
                 subsets = [set(tile).issubset(set(appearances)) for tile in iter_through]
             # 3 3 2 #TODO continue implementing returns
             if appearances_of_appearances == 2 and subsets.count(True)-1 == 1:
-                index_of_appearances = [index] + \
-                [iter_through[index:].index(appearances)]
+                index_of_appearances = [index] + [iter_through[index:].index(appearances)]
                 subset_index = subsets.index(True)
+                overwrite = [index_of_appearances + [subset_index] for appearance in appearances
+                             if appearance in iter_through[subset_index]]
+                values = appearances
+                return overwrite, values
 
-                for appearance in appearances:
-                    group[appearance].set_dummy_values_to(index_of_appearances)
-                    if appearance in iter_through[subset_index]:
-                        group[appearance].set_dummy_values(subset_index)
-
-                break
             # 3 2 2
             if appearances_of_appearances == 1 and subsets.count(True)-1 == 2:
                 subset_indexes = [index2 for index2, value in enumerate(subsets) if value]
-                for appearance in appearances:
-                    group[appearance].set_dummy_values_to(index)
-                    for subset_index in subset_indexes:
-                        if appearance in iter_through[subset_index]:
-                            group[appearance].set_dummy_values(subset_index)
-                break
+                overwrite = [[index] + [subset_index for subset_index in subset_indexes
+                                        if appearance in iter_through[subset_index]]
+                             for appearance in appearances]
+                values = appearances
+                return overwrite, values
+
         # 2 2 2
-        if len(appearances) == 2:
+        if len(appearances) == 2: #TODO TEST this
             other_indexes = [index_2d_list_condition(iter_through, appearance, length_list)
                              for appearance in appearances]
             other_values = [iter_through[(other_indexes[index][0])][1-other_indexes[index][1]]
@@ -628,12 +627,10 @@ def hidden_triples(iter_through):
             # one of the values removed only had two copies on at the time
 
             if len(other_indexes) == 2 and other_values[0] == other_values[1]:
-                for appearance in appearances:
-                    group[appearance].set_dummy_value_to(index)
-                    group[appearance].set_dummy_value(other_index for other_index in other_indexes
-                                                      if appearance in iter_through[other_index] )
-                    group[other_values].set_dummy_value_to(other_indexes)
-                break
+                overwrite = [index + other_index for other_index in other_indexes for appearance in appearances
+                             if appearance in iter_through[other_index]] + other_indexes
+                values = appearances + [other_values]
+                return overwrite, values
 
 
 def index_2d_list_condition(list_2d, key, condition):
@@ -646,13 +643,13 @@ def length_list(target_list, target=2):
     return len(target_list) == target
 
 
-def check_naked_hidden_duplicates(grid):
+def check_tuples_duplicates(grid):
     rows = [[tile for tile in grid.get_row(row)] for row in range(9)]
     columns = [[tile for tile in grid.get_coloumn(column)] for column in range(9)]
     grids_3_x_3 = [[tile for tile in grid.get_grid_3_by_3(grid_3x3)] for grid_3x3 in range(9)]
     criteria = [rows, columns, grids_3_x_3]
     for criterion in criteria:
-        naked_pairs(criterion)
+        solve_through_tuples(criterion)
 
 # </editor-fold>
 
