@@ -8,6 +8,8 @@ import pygame.freetype
 # import _mysql
 # </editor-fold>
 # TODO Throw a try except if no server up
+# TODO upload this to github
+# TODO look up mapping
 # <editor-fold desc="Initial measurement definitions">
 # https://docs.python.org/3/library/functions.html
 # max maybe help Julian
@@ -426,7 +428,7 @@ def game_main(sudoku_gird):  # runs the main loop of the sudoku grid
 
 # <editor-fold desc="Generate problem from seed">
 # TODO work on this after pi
-def make_SudokuGrid(finished_grid):  # returns sudoku gird in a 1 dimensional array (easy of use)
+def make_sudoku_grid(finished_grid):  # returns sudoku gird in a 1 dimensional array (easy of use)
     global Difficulty
     finished_grid = shuffle_grid(finished_grid)
     problem = generate_problem(finished_grid, Difficulty)
@@ -526,42 +528,61 @@ def basic_dummy_values(grid):
     for tile in grid:
         index = tile.get_index()
         for number in range(1, 9):
-            if ((number not in grid.get_grid_3_by_3(index)) and (number not in grid.get_row(index))
-                and (number not in grid.get_coloumn(index))):  #TODO sort out this IDK what the problem is
+            if ((number not in grid.get_grid_3_by_3(index)) and (number not in grid.get_row(index)) and
+                    (number not in grid.get_coloumn(index))):  # TODO sort out this IDK what the problem is
 
                 tile.set_dummy_values(number)
 
 
-def get_dummy_values_from_tiles(tiles):
-    return [tile.get_dummy_values() for tile in tiles]
-
-# TODO as hidden / naked reverse of each other try to filp the functions some how
-
-
 def get_numbers_appearance_by_index(group):
     return [[row for row in range(len(group)) if number in group[row]] for number in range(1, 10)]
+
+# <editor-fold desc="Tuple solving">
+def get_dummy_values_from_tiles(tiles):
+    return [tile.get_dummy_values() for tile in tiles]
 
 
 def solve_through_tuples(group):
     numbers_appearance_by_index = get_numbers_appearance_by_index(group)
     dummy_values_by_tile = get_dummy_values_from_tiles(group)
     solve_functions = [singles, doubles, triples]
-    flag = False
     for function in solve_functions:
         index, value = function(numbers_appearance_by_index)  # TODO double check all of this
         if index:
-            flag = True
+            remove_naked_tuples(group, value, index)
         else:
             value, index = function(dummy_values_by_tile)
             if index:
-                flag = True
-        if flag:
-            if type(index) == int:
-                group[index].set_value_to(value)
+                remove_hidden_tuples(group, value, index)
+
+
+def remove_naked_tuples(group, value, index):
+    old_group = list(group)
+    for tile in group:
+        tile_dummy_values = tile.get_dummy_values()
+        if value in tile_dummy_values and tile != group[index]:
+            if type(value) == int:
+                tile_dummy_values.set_dummy_values(value)
             else:
-                for count in range(len(index)):
-                    group[index[count]].set_value_to(index[count])
-            break  # If no change set flag
+                tile_dummy_values.set_dummy_values([values for values in value if values in tile_dummy_values])
+
+    if old_group != group:
+        return False  # If no change set flag
+    else:
+        return True  # If no change set flag
+
+
+def remove_hidden_tuples(group, value, index):
+    old_group = list(group)
+    if type(index) == int:
+        group[index].set_value_to(value)
+    else:
+        for count in range(len(index)):
+            group[index[count]].set_value_to(index[count])
+    if old_group != group:
+        return False  # If no change set flag
+    else:
+        return True # If no change set flag
 
 
 def singles(iter_through):
@@ -650,6 +671,40 @@ def check_tuples_duplicates(grid):
     criteria = [rows, columns, grids_3_x_3]
     for criterion in criteria:
         solve_through_tuples(criterion)
+# </editor-fold>
+
+
+def box_line_reduction_pointing_pairs_trips_call(grid):
+    rows, columns, subgrids, rotated_subgrids = [], [], []
+
+    for _ in range(9):
+        rows.append(grid.get_row)
+        columns.append(grid.get_coloumns)
+        subgrid = grid.get_subgrids
+        subgrids.append(grid.subgrid)
+        rotated_subgrids.append(rotation(subgrid, 90))
+
+    rows_columns = rows + columns
+    subgrids = subgrids + rotated_subgrids
+    Test_groups = [rows_columns] + [subgrids]
+    for x in range(18):
+        for test_group_index in range(2):
+            test_group = get_numbers_appearance_by_index(Test_groups[test_group_index][x])
+            numbers, tile_indexes = intersection_removal(test_group)
+            if
+
+
+def pointing_tuples(appearance_grid):
+    for index ,apperances in enumerate(appearance_grid):
+        if len(apperances) in range(2, 4):
+            coloumn_apperances = [row_sub_grid_value % 3 for row_sub_grid_value in apperances]
+        # TODO only does one orientation
+        # TODO could flip grids
+        # TODO question what I am doing with my life
+        if all(grid_number_appearance_in) == grid_number_appearance_in[0]:
+            return grid_number_appearance_in[0], index
+
+
 
 # </editor-fold>
 
