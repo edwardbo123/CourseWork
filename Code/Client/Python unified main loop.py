@@ -674,9 +674,9 @@ def check_tuples_duplicates(grid):
 # </editor-fold>
 
 
-def box_line_reduction_pointing_pairs_trips_call(grid):
+# <editor-fold desc="Intersection Removal">
+def intersection_removal_call(grid):
     rows, columns, subgrids, rotated_subgrids = [], [], []
-
     for _ in range(9):
         rows.append(grid.get_row)
         columns.append(grid.get_coloumns)
@@ -689,22 +689,38 @@ def box_line_reduction_pointing_pairs_trips_call(grid):
     Test_groups = [rows_columns] + [subgrids]
     for x in range(18):
         for test_group_index in range(2):
-            test_group = get_numbers_appearance_by_index(Test_groups[test_group_index][x])
-            numbers, tile_indexes = intersection_removal(test_group)
-            if
+            test_group = get_numbers_appearance_by_index(Test_groups[test_group_index][x].get_dummy_values())
+            number, tile_indexes = None, None
+            tile_index, number = intersection_removal(test_group)
+            if number:
+                if test_group_index == 0:
+                    if x in range(9):
+                    grid_x_y = [tile_index//3, x//3]
+
+                else:
+                    grid_x_y = [x//3, tile_index//3]
+            else:
+                if x in range(9):
+                    row_index = tile_index//3 + (x//3)*9
+
+                else:
+                    column_index_in_3_block = tile_index//3 + (x%3)*9#TODO FINISHED HERE
+
+                # Using the tile_indexes
 
 
-def pointing_tuples(appearance_grid):
-    for index ,apperances in enumerate(appearance_grid):
-        if len(apperances) in range(2, 4):
-            coloumn_apperances = [row_sub_grid_value % 3 for row_sub_grid_value in apperances]
+
+
+def intersection_removal(appearance_grid):
+    for index ,appearances in enumerate(appearance_grid):
+        if len(appearances) in range(2, 4):
+            column_appearances = [row_sub_grid_value % 3 for row_sub_grid_value in appearances]
         # TODO only does one orientation
         # TODO could flip grids
         # TODO question what I am doing with my life
-        if all(grid_number_appearance_in) == grid_number_appearance_in[0]:
-            return grid_number_appearance_in[0], index
-
-
+        if all(column_appearances == column_appearances[0]):
+            return min(appearances), index
+# </editor-fold>
 
 # </editor-fold>
 
