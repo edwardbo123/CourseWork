@@ -8,7 +8,6 @@ import pygame.freetype
 # import _mysql
 # </editor-fold>
 # TODO Throw a try except if no server up
-# TODO upload this to github
 # TODO look up mapping
 # <editor-fold desc="Initial measurement definitions">
 # https://docs.python.org/3/library/functions.html
@@ -86,7 +85,6 @@ class Button (pygame.Rect):  # use private increasing values (uuid)
     """
     Class for the on screen buttons (these will be what the user interacts with)
     """
-    # TODO sort out multiple lines of text
     def __init__(self, left, top, width, height, function, fill_type, text="",
                  args=None, colour=pygame.Color(0, 0, 0), source=Screen, text_colour=pygame.Color(0, 0, 0)):
         super().__init__(self)
@@ -243,7 +241,9 @@ class SudokuGrid(pygame.Rect):  # note this could inherit from Button
 
     def generate_new_puzzle(self):
         global difficulty
-        self.set_grid_values(generate_problem(shuffle_grid(get_seed()), difficulty))
+        # self.set_grid_values(generate_problem(shuffle_grid(get_seed()), difficulty))
+        self.set_grid_values(shuffle_grid(eval(input("81 long list"))))
+        generate_problem(self)
 
 
 class SudokuTile(Button):  # 40x40 rough guess
@@ -308,12 +308,13 @@ class SudokuTile(Button):  # 40x40 rough guess
         self.value = None
 
     def edit(self, left_click, number):
-        # TODO catch editable
-        if left_click:
-            self.set_value(number)
-        else:
-            self.set_dummy_values(number)  # TODO this changes all my dummy_values to the same thing
-        self.draw()
+        # TODO highlight this and other tiles in like a cross
+        if self.editable:
+            if left_click:
+                self.set_value(number)
+            else:
+                self.set_dummy_values(number)
+            self.draw()
 # </editor-fold>
 
 
@@ -343,6 +344,7 @@ def display_buttons(menu):
             button.update()
         except TypeError:
             button.update("all")  # TODO generate a new problem as well
+
 # </editor-fold>
 
 
@@ -428,18 +430,6 @@ def game_main(sudoku_gird):  # runs the main loop of the sudoku grid
 
 # <editor-fold desc="Generate problem from seed">
 # TODO work on this after pi
-def make_sudoku_grid(finished_grid):  # returns sudoku gird in a 1 dimensional array (easy of use)
-    global Difficulty
-    finished_grid = shuffle_grid(finished_grid)
-    problem = generate_problem(finished_grid, Difficulty)
-    # display after
-    # pull seed
-    # generate problem based on difficulty
-    ##
-    print("make_SudokuGrid function incomplete")
-    pass
-
-
 def shuffle_grid(grid):
     print(grid)
     # some rotations if repeated can dupe keep in mind
@@ -514,28 +504,25 @@ def grid_column_swap(grid):
             = grid[y*9+grid_columns[1]:y*9+grid_columns[1]+3], grid[y*9+grid_columns[0]:y*9+grid_columns[0]+3]
         #  Grid[y*9+Grid_columns[1]:y*9+Grid_columns[1]+3] = temp_row
         return grid
-
-
-def generate_problem(grid, difficulty):
-    # TODO work on this after PI
-    pass
 # </editor-fold>
 
 
 # <editor-fold desc="Solve Sudoku problems">
 # TODO check all of these functions not sure any of them work
+# TODO still haven't put in automatic dummy values
 def basic_dummy_values(grid):
     for tile in grid:
         index = tile.get_index()
         for number in range(1, 9):
             if ((number not in grid.get_grid_3_by_3(index)) and (number not in grid.get_row(index)) and
-                    (number not in grid.get_coloumn(index))):  # TODO sort out this IDK what the problem is
+                    (number not in grid.get_coloumn(index))):
 
                 tile.set_dummy_values(number)
 
 
 def get_numbers_appearance_by_index(group):
     return [[row for row in range(len(group)) if number in group[row]] for number in range(1, 10)]
+
 
 # <editor-fold desc="Tuple solving">
 def get_dummy_values_from_tiles(tiles):
@@ -620,7 +607,7 @@ def triples(iter_through):
 
             else:
                 subsets = [set(tile).issubset(set(appearances)) for tile in iter_through]
-            # 3 3 2 #TODO continue implementing returns
+            # 3 3 2
             if appearances_of_appearances == 2 and subsets.count(True)-1 == 1:
                 index_of_appearances = [index] + [iter_through[index:].index(appearances)]
                 subset_index = subsets.index(True)
@@ -677,11 +664,11 @@ def check_tuples_duplicates(grid):
 # <editor-fold desc="Intersection Removal">
 def intersection_removal_call(grid):
     rows, columns, subgrids, rotated_subgrids = [], [], []
-    for _ in range(9):
-        rows.append(grid.get_row)
-        columns.append(grid.get_coloumns)
+    for index in range(9):
+        rows.append(grid.get_row(index))
+        columns.append(grid.get_column(index))
         subgrid = grid.get_subgrids
-        subgrids.append(grid.subgrid)
+        subgrids.append(grid.subgrid(index))
         rotated_subgrids.append(rotation(subgrid, 90))
 
     rows_columns = rows + columns
@@ -690,37 +677,67 @@ def intersection_removal_call(grid):
     for x in range(18):
         for test_group_index in range(2):
             test_group = get_numbers_appearance_by_index(Test_groups[test_group_index][x].get_dummy_values())
-            number, tile_indexes = None, None
+            tile_index, number = None, None
             tile_index, number = intersection_removal(test_group)
             if number:
                 if test_group_index == 0:
                     if x in range(9):
-                    grid_x_y = [tile_index//3, x//3]
+                        grid_index = tile_index//3 + (x//3)*3
+
+                    else:
+                        grid_index = x//3 + (tile_index//3)*3
+
+                    group = grid.get_grid_3_by_3(grid_index)
+                    group_to_remove_values = group[:x % 3] + group[(x + 1) % 3:]
 
                 else:
-                    grid_x_y = [x//3, tile_index//3]
-            else:
-                if x in range(9):
-                    row_index = tile_index//3 + (x//3)*9
+                    if x in range(9):
+                        row_index = tile_index//3 + (x//3)*3
+                        group = grid.get_row(row_index)
+                        group_to_remove_values = group[:x % 3] + group[(x + 1) % 3:]
 
-                else:
-                    column_index_in_3_block = tile_index//3 + (x%3)*9#TODO FINISHED HERE
+                    else:
+                        column_index_in_3_block = tile_index//3 + (x%3)*3
+                        group = grid.get_column(column_index_in_3_block)
+                        group_to_remove_values = group[:x // 3] + group[(x + 1) // 3:]
 
-                # Using the tile_indexes
-
-
+                for tile in group_to_remove_values:
+                    if number in tile.get_dummy_values():
+                        tile.set_dummy_values(number)
 
 
 def intersection_removal(appearance_grid):
-    for index ,appearances in enumerate(appearance_grid):
+    for index, appearances in enumerate(appearance_grid):
         if len(appearances) in range(2, 4):
             column_appearances = [row_sub_grid_value % 3 for row_sub_grid_value in appearances]
-        # TODO only does one orientation
-        # TODO could flip grids
-        # TODO question what I am doing with my life
         if all(column_appearances == column_appearances[0]):
             return min(appearances), index
+
 # </editor-fold>
+
+
+def generate_problem(grid_class):
+    # Difficulty is a global variable specifying which functions I can use
+    solving_techniques = [intersection_removal_call, solve_through_tuples, dummy_values]
+    tile_indexes = [x for x in range(81)]
+    random.shuffle(tile_indexes)
+    grid = grid_class.get_grid()
+    for index in tile_indexes:
+        value = grid[index]
+        grid[index] = None
+        old_grid = list(grid)
+        for solving_technique in solving_techniques:
+            grid = solving_technique(grid)
+            if grid != old_grid:
+                can_get_to = True
+                break
+        else:
+            can_get_to = False
+
+        if not can_get_to:
+            grid[index] = value
+
+
 
 # </editor-fold>
 
