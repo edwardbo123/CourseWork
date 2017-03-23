@@ -73,7 +73,7 @@ def init_buttons():
                  "Return to Main Menu": Button(DIMENSIONS["Game"]["Button_left"], 43*7, 180, 78,
                                                swap_screen, "Outline", "Return to \n main menu", "Main"),
                  "Grid": SudokuGrid()}
-                }
+                } # TODO add solve button or append it on to help
     swap_screen("Main")
 init()
 # </editor-fold>
@@ -236,11 +236,14 @@ class SudokuGrid(pygame.Rect):  # note this could inherit from Button
             tile.update()
 
     def check_clicked_on(self, loc):
-        for rect in self.grid:
+        for index, rect in enumerate(self.grid):
             if rect.collidepoint(loc):
+                for tile in zip(self.get_column(index), self.get_row(index), self.get_grid_3_by_3(index)):
+                    tile.set_colour()
                 return rect, None, loc
-        else:
-            return False, None, None
+
+            else:
+                return False, None, None
 
     def set_grid_values(self, values):
         for index, value in enumerate(values):
@@ -263,7 +266,9 @@ class SudokuTile(Button):  # 40x40 rough guess
         self.dummy_values = dummy_values
         self.editable = editable
         self.index = SudokuTile.new_index()
-        super().__init__(self.left, self.top, 40, 40, None, "Fill", colour=pygame.Color(255, 255, 255))
+        self.text_colour = pygame.Color(0, 0, 0)
+        self.Colour = pygame.Color(255, 255, 255)
+        super().__init__(self.left, self.top, 40, 40, None, "Fill", colour=self.Colour, text_colour=pygame.Color(0, 0, 0))
         # 40 is tile width/height
 
     def get_value(self):
@@ -285,10 +290,17 @@ class SudokuTile(Button):  # 40x40 rough guess
     def get_editable(self):
         return self.editable
 
+    def change_editable(self):
+        self.editable = not self.editable
+
     def set_value(self, value):  # if want use help and stuff (options)
         self.value = value
         self.dummy_values = [False for _ in range(9)]
         self.change_text(value)
+
+    def set_colour(self, new_colour_rgb):
+        self.colour = pygame.Color(new_colour_rgb)
+        self.text_colour = pygame.Color(map(minus_255,new_colour_rgb))
 
     def set_dummy_values(self, dummy_value):
         # if want use help and stuff (options)
@@ -324,6 +336,8 @@ class SudokuTile(Button):  # 40x40 rough guess
             self.draw()
 # </editor-fold>
 
+def minus_255(number):
+    return 255-number
 
 # <editor-fold desc="Swap Screen">
 def swap_screen(menu):
@@ -725,34 +739,43 @@ def intersection_removal(appearance_grid):
 
 # </editor-fold>
 
-
+# <editor-fold desc="Generate Problem">
 def generate_problem(grid_class):
     # Difficulty is a global variable specifying which functions I can use
     tile_indexes = [x for x in range(81)]
     random.shuffle(tile_indexes)
     for index in tile_indexes:
-        value = grid_class.get_values(index)
+        value = grid_class.get_values()
         grid_class.set_value(index, None)
+        if not try_to_solve(grid_class):
+            grid_class.set_value(index, value)
+
+    for tile in grid_class.get_grid():
+        if tile.get_value:
+            tile.change_editable()
 
 def get_state(grid):
-    return [grid.get_dummy_value(x) for x in range(81)], [grid.get_value(x) for x in range(81)]
+    return [[grid.get_dummy_value(x) for x in range(81)], [grid.get_value(x) for x in range(81)]]
 
 def try_to_solve(grid):
     solving_techniques = [trivial_dummy_values, solve_through_tuples, intersection_removal_call]
     # Will be specified by difficulty
-    old_dummies, old_values = [grid.get_dummy_value(x) for x in range(81)]# might be a problem with pointers
-    for solving_technique in solving_techniques: # Instead call recursively then if there is a change
-        grid = solving_technique(grid)
-        if old_dummies, old_values != get_state(grid): # TODO stopped here
-            change = True
-
-
+    change = False
+    while not change:
+        [old_dummies, old_values] = get_state(grid)
+        for solving_technique in solving_techniques:
+            grid = solving_technique(grid)
+            if [old_dummies, old_values] != get_state(grid):
+                change = True
+                break
 
     if all(grid.get_value(tile_index) for tile_index in range(81)):
         return True
 
     else:
         return False
+# </editor-fold>
+
 # </editor-fold>
 
 
@@ -771,7 +794,7 @@ def submit_high_score_to_server(actions, time, name):
 # </editor-fold>
 
 
-def save(grid, high_score):
+def save(grid):
     write_to_file = ""
     for tile in grid:
         value = tile.get_value()
