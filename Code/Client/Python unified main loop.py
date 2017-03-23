@@ -173,19 +173,26 @@ class SudokuGrid(pygame.Rect):  # note this could inherit from Button
     def get_values(self):
         return [tile.get_value for tile in self.grid]
 
-    def get_column(self, index):
-        column = index % 9
-        return self.grid[column::9]  # returning the sudoku tiles not values
+    def get_column(self, index, column_number = False):
+        if not column_number:
+            index //= 9
+        return self.grid[index::9]  # returning the sudoku tiles not values
 
-    def get_row(self, index):
-        row = index // 9
-        return self.grid[row*9:(row+1)*9]
+    def get_row(self, index, row_number = False):
+        if not row_number:
+            index //= 9
+        return self.grid[index*9:(index+1)*9]
 
-    def get_grid_3_by_3(self, index):
-        column_number, row_number = divmod(index, 9)
-        column_number //= 3
+    def get_grid_3_by_3(self, index, grid_number = False):
+        if not grid_number:
+            column_number, row_number = divmod(index, 9)
+            column_number //= 3
+            row_number //= 3
+
+        else:
+            column_number, row_number = divmod(index, 3)
+
         column_number *= 3
-        row_number //= 3
         row_number *= 3
 #        First_row = [self.grid[x+y*9:x+y*9+4]]
 #        Second_row = [self.grid[x+(y+1)*9:x+(y+1)*9+4]]
@@ -662,13 +669,16 @@ def check_tuples_duplicates(grid):
 
 
 # <editor-fold desc="Intersection Removal">
+#TODO rows/ columns/grids are indexed via the tile number not the row number
+def trivial_dummy_values(grid):
+
 def intersection_removal_call(grid):
     rows, columns, subgrids, rotated_subgrids = [], [], []
     for index in range(9):
-        rows.append(grid.get_row(index))
-        columns.append(grid.get_column(index))
-        subgrid = grid.get_subgrids
-        subgrids.append(grid.subgrid(index))
+        rows.append(grid.get_row(index, True))
+        columns.append(grid.get_column(index, True))
+        subgrid = grid.get_subgrids(index, True)
+        subgrids.append(subgrid)
         rotated_subgrids.append(rotation(subgrid, 90))
 
     rows_columns = rows + columns
@@ -687,18 +697,18 @@ def intersection_removal_call(grid):
                     else:
                         grid_index = x//3 + (tile_index//3)*3
 
-                    group = grid.get_grid_3_by_3(grid_index)
+                    group = grid.get_grid_3_by_3(grid_index, True)
                     group_to_remove_values = group[:x % 3] + group[(x + 1) % 3:]
 
                 else:
                     if x in range(9):
                         row_index = tile_index//3 + (x//3)*3
-                        group = grid.get_row(row_index)
+                        group = grid.get_row(row_index, True)
                         group_to_remove_values = group[:x % 3] + group[(x + 1) % 3:]
 
                     else:
                         column_index_in_3_block = tile_index//3 + (x%3)*3
-                        group = grid.get_column(column_index_in_3_block)
+                        group = grid.get_column(column_index_in_3_block, True)
                         group_to_remove_values = group[:x // 3] + group[(x + 1) // 3:]
 
                 for tile in group_to_remove_values:
@@ -718,27 +728,31 @@ def intersection_removal(appearance_grid):
 
 def generate_problem(grid_class):
     # Difficulty is a global variable specifying which functions I can use
-    solving_techniques = [intersection_removal_call, solve_through_tuples, dummy_values]
     tile_indexes = [x for x in range(81)]
     random.shuffle(tile_indexes)
-    grid = grid_class.get_grid()
     for index in tile_indexes:
-        value = grid[index]
-        grid[index] = None
-        old_grid = list(grid)
-        for solving_technique in solving_techniques:
-            grid = solving_technique(grid)
-            if grid != old_grid:
-                can_get_to = True
-                break
-        else:
-            can_get_to = False
+        value = grid_class.get_values(index)
+        grid_class.set_value(index, None)
 
-        if not can_get_to:
-            grid[index] = value
+def get_state(grid):
+    return [grid.get_dummy_value(x) for x in range(81)], [grid.get_value(x) for x in range(81)]
+
+def try_to_solve(grid):
+    solving_techniques = [trivial_dummy_values, solve_through_tuples, intersection_removal_call]
+    # Will be specified by difficulty
+    old_dummies, old_values = [grid.get_dummy_value(x) for x in range(81)]# might be a problem with pointers
+    for solving_technique in solving_techniques: # Instead call recursively then if there is a change
+        grid = solving_technique(grid)
+        if old_dummies, old_values != get_state(grid): # TODO stopped here
+            change = True
 
 
 
+    if all(grid.get_value(tile_index) for tile_index in range(81)):
+        return True
+
+    else:
+        return False
 # </editor-fold>
 
 
