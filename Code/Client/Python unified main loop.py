@@ -73,7 +73,7 @@ def init_buttons():
                  "Return to Main Menu": Button(DIMENSIONS["Game"]["Button_left"], 43*7, 180, 78,
                                                swap_screen, "Outline", "Return to \n main menu", "Main"),
                  "Grid": SudokuGrid()}
-                } # TODO add solve button or append it on to help
+                }  # TODO add solve button or append it on to help
     swap_screen("Main")
 init()
 # </editor-fold>
@@ -170,18 +170,22 @@ class SudokuGrid(pygame.Rect):  # note this could inherit from Button
         self.grid = []
         self.source = source
 
+    def initialise_values(self):
+        self.define_tiles(self)
+        self.generate_new_puzzle(self)
+
     def get_values(self):
         return [tile.get_value for tile in self.grid]
 
     def get_column(self, index, column_number=False):
         if not column_number:
-            index //= 9
-        return self.grid[index::9]  # returning the sudoku tiles not values
+            index %= 9
+        return tuple(self.grid[index::9])  # returning the sudoku tiles not values
 
     def get_row(self, index, row_number=False):
         if not row_number:
             index //= 9
-        return self.grid[index*9:(index+1)*9]
+        return tuple(self.grid[index*9:(index+1)*9])
 
     def get_sub_grid(self, index, grid_number=False):
         if not grid_number:
@@ -197,16 +201,17 @@ class SudokuGrid(pygame.Rect):  # note this could inherit from Button
 #        First_row = [self.grid[x+y*9:x+y*9+4]]
 #        Second_row = [self.grid[x+(y+1)*9:x+(y+1)*9+4]]
 #        Third_row = [self.grid[x+(y+2)*9:x+(y+2)*9+4]]
-        grid_3_by_3 = [self.grid
-                       [column_number+(row_number+row_increment)*9:
-                        column_number+(row_number+row_increment)*9+4]
-                       for row_increment in range(3)]
-        return grid_3_by_3 # TODO WRONG
+        sub_grid = [self.grid
+                    [row_number+(column_number+row_increment)*9:
+                     row_number+(column_number+row_increment)*9+3]
+                    for row_increment in range(3)]
+        return tuple(sum(sub_grid, []))  # TODO WRONG
 
     def get_grid(self):
-        return self.grid
+        return tuple(self.grid)
 
     def define_tiles(self):  # TODO continue doc strings
+        SudokuTile.new_index = 0
         for tile in range(81):
             location = self.get_location(tile)
             self.grid.append(SudokuTile(location[1], location[0], None))
@@ -238,15 +243,21 @@ class SudokuGrid(pygame.Rect):  # note this could inherit from Button
     def check_clicked_on(self, loc):
         for index, rect in enumerate(self.grid):
             if rect.collidepoint(loc):
-                print("START TEST", self.get_column(index))
-                print(set(self.get_column(index))) #ERROR
-                for tile in list(set(list(self.get_column(index)))
-                                 .union(list(self.get_row(index)), list(self.get_sub_grid(index)))):
-                    tile.set_colour([44, 192, 255])
-                return rect, None, loc
+                return rect, self.highlight_adjacent, [index, pygame.Color(44, 192, 255)]
 
         else:
             return False, None, None
+
+    def highlight_adjacent(self, index_color):
+        [index, color] = index_color
+        for tile in list(set(self.get_column(index))
+                         .union(set(self.get_row(index)), set(self.get_sub_grid(index)))):
+            tile.set_color(color)
+            tile.draw()
+            tile.update()
+
+    def un_highlight(self, tile):
+        self.highlight_adjacent([self.grid.index(tile), pygame.Color(255, 255, 255)])
 
     def set_grid_values(self, values):
         for index, value in enumerate(values):
@@ -272,8 +283,13 @@ class SudokuTile(Button):  # 40x40 rough guess
         SudokuTile.new_index += 1
         self.text_colour = pygame.Color(0, 0, 0)
         self.Colour = pygame.Color(255, 255, 255)
-        super().__init__(self.left, self.top, 40, 40, None, "Fill", colour=self.Colour, text_colour=pygame.Color(0, 0, 0))
+        super().__init__(self.left, self.top, 40, 40, None, "Fill",
+                         colour=self.Colour, text_colour=pygame.Color(0, 0, 0))
+        # TODO remove text argument
         # 40 is tile width/height
+
+    def __hash__(self):
+        return hash(self.index)
 
     def get_value(self):
         return self.value
@@ -302,9 +318,11 @@ class SudokuTile(Button):  # 40x40 rough guess
         self.dummy_values = [False for _ in range(9)]
         self.change_text(value)
 
-    def set_colour(self, new_colour_rgb):
-        self.colour = pygame.Color(new_colour_rgb)
-        self.text_colour = pygame.Color(map(minus_255,new_colour_rgb))
+    def set_color(self, new_colour_rgb):
+        self.Colour = new_colour_rgb
+
+    def set_text_colour(self, new_colour_rgb):
+        self.text_colour = new_colour_rgb
 
     def set_dummy_values(self, dummy_value):
         # if want use help and stuff (options)
@@ -341,15 +359,14 @@ class SudokuTile(Button):  # 40x40 rough guess
 # </editor-fold>
 
 
-def minus_255(number):
-    return 255-number
-
 # <editor-fold desc="Swap Screen">
 def swap_screen(menu):
-    global Screen, DIMENSIONS, current_menu
+    global Screen, DIMENSIONS, current_menu, buttons
     current_menu = menu
     if menu in DIMENSIONS.keys():
         new_screen_size = (DIMENSIONS[menu]["X"], DIMENSIONS[menu]["Y"])
+        if menu == "Game":
+            buttons[menu]["Grid"].initialise_values()
     else:
         new_screen_size = (DIMENSIONS["Main"]["X"], DIMENSIONS["Main"]["Y"])
 
@@ -425,8 +442,7 @@ def input_handle():
         elif event.type == pygame.KEYDOWN and event.key in range(49, 58):
             try:
                 last_clicked_on[0].edit(last_clicked_on[1], event.unicode)
-            except AttributeError as e:
-                print(e, dir(last_clicked_on))
+            except AttributeError:
                 pass
 
 
@@ -434,10 +450,13 @@ def handle_click(left_click, mouse_pos):
     global current_menu, buttons, last_clicked_on
     for button in buttons[current_menu].values():
         clicked_on, function, args = button.check_clicked_on(mouse_pos)
-        print(clicked_on)
         if clicked_on:
+            if current_menu == "Game":
+                try:
+                    buttons["Game"]["Grid"].un_highlight(last_clicked_on[0])
+                except ValueError:
+                    pass
             last_clicked_on = [clicked_on, left_click]
-            print(last_clicked_on)
             if args:
                 try:
                     function(args)
@@ -460,7 +479,6 @@ def game_main(sudoku_gird):  # runs the main loop of the sudoku grid
 # <editor-fold desc="Generate problem from seed">
 # TODO work on this after pi
 def shuffle_grid(grid):
-    print(grid)
     # some rotations if repeated can dupe keep in mind
     shuffle_type = [rotation, grid_column_swap, set_random_numbers]  # all functions
     # need column_swap
@@ -517,13 +535,11 @@ def set_random_numbers(array):
     random.shuffle(values)
     set_values = [x for x in range(1, 10)]  # store as alphabet characters
     swap = {set_values[x]: values[x] for x in range(9)}
-    print(type(array))
     new_array = [swap[x] for x in array]
     return new_array
 
 
 def grid_column_swap(grid):
-    print(grid)
     grid = list(tuple(grid))  # remove pointers
     grid_columns = [0, 3, 6]
     random.shuffle(grid_columns)
