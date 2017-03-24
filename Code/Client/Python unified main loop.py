@@ -173,17 +173,17 @@ class SudokuGrid(pygame.Rect):  # note this could inherit from Button
     def get_values(self):
         return [tile.get_value for tile in self.grid]
 
-    def get_column(self, index, column_number = False):
+    def get_column(self, index, column_number=False):
         if not column_number:
             index //= 9
         return self.grid[index::9]  # returning the sudoku tiles not values
 
-    def get_row(self, index, row_number = False):
+    def get_row(self, index, row_number=False):
         if not row_number:
             index //= 9
         return self.grid[index*9:(index+1)*9]
 
-    def get_grid_3_by_3(self, index, grid_number = False):
+    def get_sub_grid(self, index, grid_number=False):
         if not grid_number:
             column_number, row_number = divmod(index, 9)
             column_number //= 3
@@ -201,7 +201,7 @@ class SudokuGrid(pygame.Rect):  # note this could inherit from Button
                        [column_number+(row_number+row_increment)*9:
                         column_number+(row_number+row_increment)*9+4]
                        for row_increment in range(3)]
-        return grid_3_by_3
+        return grid_3_by_3 # TODO WRONG
 
     def get_grid(self):
         return self.grid
@@ -238,12 +238,15 @@ class SudokuGrid(pygame.Rect):  # note this could inherit from Button
     def check_clicked_on(self, loc):
         for index, rect in enumerate(self.grid):
             if rect.collidepoint(loc):
-                for tile in zip(self.get_column(index), self.get_row(index), self.get_grid_3_by_3(index)):
-                    tile.set_colour()
+                print("START TEST", self.get_column(index))
+                print(set(self.get_column(index))) #ERROR
+                for tile in list(set(list(self.get_column(index)))
+                                 .union(list(self.get_row(index)), list(self.get_sub_grid(index)))):
+                    tile.set_colour([44, 192, 255])
                 return rect, None, loc
 
-            else:
-                return False, None, None
+        else:
+            return False, None, None
 
     def set_grid_values(self, values):
         for index, value in enumerate(values):
@@ -257,7 +260,7 @@ class SudokuGrid(pygame.Rect):  # note this could inherit from Button
 
 
 class SudokuTile(Button):  # 40x40 rough guess
-    new_index = itertools.count().next
+    new_index = 0
 
     def __init__(self, left, top, value, dummy_values=[False for _ in range(9)], editable=True):
         self.left, self.top = left, top
@@ -265,7 +268,8 @@ class SudokuTile(Button):  # 40x40 rough guess
         self.value = value
         self.dummy_values = dummy_values
         self.editable = editable
-        self.index = SudokuTile.new_index()
+        self.index = SudokuTile.new_index
+        SudokuTile.new_index += 1
         self.text_colour = pygame.Color(0, 0, 0)
         self.Colour = pygame.Color(255, 255, 255)
         super().__init__(self.left, self.top, 40, 40, None, "Fill", colour=self.Colour, text_colour=pygame.Color(0, 0, 0))
@@ -335,6 +339,7 @@ class SudokuTile(Button):  # 40x40 rough guess
                 self.set_dummy_values(number)
             self.draw()
 # </editor-fold>
+
 
 def minus_255(number):
     return 255-number
@@ -420,7 +425,8 @@ def input_handle():
         elif event.type == pygame.KEYDOWN and event.key in range(49, 58):
             try:
                 last_clicked_on[0].edit(last_clicked_on[1], event.unicode)
-            except AttributeError:
+            except AttributeError as e:
+                print(e, dir(last_clicked_on))
                 pass
 
 
@@ -428,8 +434,10 @@ def handle_click(left_click, mouse_pos):
     global current_menu, buttons, last_clicked_on
     for button in buttons[current_menu].values():
         clicked_on, function, args = button.check_clicked_on(mouse_pos)
+        print(clicked_on)
         if clicked_on:
             last_clicked_on = [clicked_on, left_click]
+            print(last_clicked_on)
             if args:
                 try:
                     function(args)
@@ -535,7 +543,7 @@ def basic_dummy_values(grid):
     for tile in grid:
         index = tile.get_index()
         for number in range(1, 9):
-            if ((number not in grid.get_grid_3_by_3(index)) and (number not in grid.get_row(index)) and
+            if ((number not in grid.get_sub_grid(index)) and (number not in grid.get_row(index)) and
                     (number not in grid.get_coloumn(index))):
 
                 tile.set_dummy_values(number)
@@ -543,6 +551,15 @@ def basic_dummy_values(grid):
 
 def get_numbers_appearance_by_index(group):
     return [[row for row in range(len(group)) if number in group[row]] for number in range(1, 10)]
+
+
+def trivial_dummy_values(grid):
+    for index, tile in enumerate(grid):
+        tile_values = [x for x in range(1, 10)]
+        row, column, sub_grid = grid.get_row(index), grid.get_column(index), grid.get_sub_grid(index)
+        iter_through = list(set(row).union(set(column), set(sub_grid)))
+        tile_values = list(set(tile_values).difference(iter_through))
+        tile.set_dummy_values(tile_values)
 
 
 # <editor-fold desc="Tuple solving">
@@ -675,7 +692,7 @@ def length_list(target_list, target=2):
 def check_tuples_duplicates(grid):
     rows = [[tile for tile in grid.get_row(row)] for row in range(9)]
     columns = [[tile for tile in grid.get_coloumn(column)] for column in range(9)]
-    grids_3_x_3 = [[tile for tile in grid.get_grid_3_by_3(grid_3x3)] for grid_3x3 in range(9)]
+    grids_3_x_3 = [[tile for tile in grid.get_sub_grid(grid_3x3)] for grid_3x3 in range(9)]
     criteria = [rows, columns, grids_3_x_3]
     for criterion in criteria:
         solve_through_tuples(criterion)
@@ -683,8 +700,7 @@ def check_tuples_duplicates(grid):
 
 
 # <editor-fold desc="Intersection Removal">
-#TODO rows/ columns/grids are indexed via the tile number not the row number
-def trivial_dummy_values(grid):
+
 
 def intersection_removal_call(grid):
     rows, columns, subgrids, rotated_subgrids = [], [], []
@@ -711,7 +727,7 @@ def intersection_removal_call(grid):
                     else:
                         grid_index = x//3 + (tile_index//3)*3
 
-                    group = grid.get_grid_3_by_3(grid_index, True)
+                    group = grid.get_sub_grid(grid_index, True)
                     group_to_remove_values = group[:x % 3] + group[(x + 1) % 3:]
 
                 else:
@@ -739,6 +755,7 @@ def intersection_removal(appearance_grid):
 
 # </editor-fold>
 
+
 # <editor-fold desc="Generate Problem">
 def generate_problem(grid_class):
     # Difficulty is a global variable specifying which functions I can use
@@ -754,26 +771,29 @@ def generate_problem(grid_class):
         if tile.get_value:
             tile.change_editable()
 
+
 def get_state(grid):
     return [[grid.get_dummy_value(x) for x in range(81)], [grid.get_value(x) for x in range(81)]]
+
 
 def try_to_solve(grid):
     solving_techniques = [trivial_dummy_values, solve_through_tuples, intersection_removal_call]
     # Will be specified by difficulty
-    change = False
-    while not change:
+    completed = False
+    while not completed:
         [old_dummies, old_values] = get_state(grid)
         for solving_technique in solving_techniques:
             grid = solving_technique(grid)
             if [old_dummies, old_values] != get_state(grid):
-                change = True
                 break
+                
+            if all(grid.get_value(tile_index) for tile_index in range(81)):
+                return completed
+            
+            elif solving_technique == solving_techniques[-1]:
+                return False
+        solving_techniques.pop(0)
 
-    if all(grid.get_value(tile_index) for tile_index in range(81)):
-        return True
-
-    else:
-        return False
 # </editor-fold>
 
 # </editor-fold>
