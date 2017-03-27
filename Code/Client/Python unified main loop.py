@@ -11,17 +11,17 @@ import pygame.freetype
 # TODO look up mapping
 # <editor-fold desc="Initial measurement definitions">
 # https://docs.python.org/3/library/functions.html
-# max maybe help Julian
-global DIMENSIONS, Index_help_type, difficulty
+
+global DIMENSIONS, index_help_type, difficulty
 DIMENSIONS = {
     "Main": {"X": 360,
              "Y": 390},
     "Game": {"X": 740,
              "Y": 430,
              "Button_left": 560}}
-Index_help_type = "Medium"
+index_help_type = "Medium"
 difficulty = "Medium"
-# TODO work on importing difficulty, Index_help_type from files and how you work with them in save
+# TODO work on importing difficulty, index_help_type from files and how you work with them in save
 # </editor-fold>
 
 
@@ -47,25 +47,25 @@ def init_options():  # have option to pull from database
     """
     Initialises all the constants and global variables
     """
-    global Help_type, Index_help_type, Difficulty
-    # Help_type = [easy, medium, difficult]  # functions
-    Help_type = ["easy", "medium", "difficult"]  # TODO replace these with functions
-    Index_help_type = 1
-    Difficulty = "Medium"
+    global help_type, index_help_type, difficulty
+    # help_type = [easy, medium, difficult]  # functions
+    help_type = ["easy", "medium", "difficult"]  # TODO replace these with functions
+    index_help_type = 1
+    difficulty = "Medium"
 
 
 def init_buttons():
     global buttons
-    global Index_help_type
+    global index_help_type
     global difficulty
     buttons = {
         "Main": {"Start Game": Button(90, 39, 180, 78, swap_screen, "Outline", "Start Game", "Game"),
                  "Options": Button(90, 4*39, 180, 78, swap_screen, "Outline",  "Options", "Options"),
                  "Exit Game": Button(90, 7*39, 180, 78, exit, "Outline", "Exit Game")},
         "Options": {"Starting help": Button(90, 39, 180, 78, change_staring_help, "Outline",
-                                            "Starting help ("+Help_type[Index_help_type]+")"),
-                    "Difficulty": Button(90, 4*39, 180, 78, change_difficulty, "Outline",
-                                         "Difficulty ("+str(difficulty)+")"),
+                                            "Starting help ("+help_type[index_help_type]+")"),
+                    "difficulty": Button(90, 4*39, 180, 78, change_difficulty, "Outline",
+                                         "difficulty ("+str(difficulty)+")"),
                     "Return to Main Menu": Button(90, 7*39, 180, 78, swap_screen, "Outline",
                                                   "Return to \n main menu", "Main")},
         "Game": {"Hint": Button(DIMENSIONS["Game"]["Button_left"], 43, 180, 78, give_hint, "Outline", "Hint"),
@@ -147,7 +147,7 @@ class Button (pygame.Rect):  # use private increasing values (uuid)
                 increment += 1
         return increment
 
-    def update(self):  # maybe do something with this
+    def update(self):
         pygame.display.update(self)
 
     def check_clicked_on(self, loc):
@@ -160,7 +160,7 @@ class Button (pygame.Rect):  # use private increasing values (uuid)
         self.text = new_text
 
 
-class SudokuGrid(pygame.Rect):  # note this could inherit from Button
+class SudokuGrid(pygame.Rect):
     """
     Class for the whole Sudoku grid that users with interact with in game
     """
@@ -205,7 +205,7 @@ class SudokuGrid(pygame.Rect):  # note this could inherit from Button
                     [row_number+(column_number+row_increment)*9:
                      row_number+(column_number+row_increment)*9+3]
                     for row_increment in range(3)]
-        return tuple(sum(sub_grid, []))  # TODO WRONG
+        return tuple(sum(sub_grid, []))
 
     def get_grid(self):
         return tuple(self.grid)
@@ -268,6 +268,22 @@ class SudokuGrid(pygame.Rect):  # note this could inherit from Button
         # self.set_grid_values(generate_problem(shuffle_grid(get_seed()), difficulty))
         self.set_grid_values(shuffle_grid(eval(input("81 long list"))))
         generate_problem(self)
+
+    def write_to_text(self, file):  # TODO use JSON files
+        with open(file, "w"):
+            file.truncate()
+            file.write("High score: %s \n" % str(self.highscore))
+            file.write("Unchangeable: %s \n" % str([index for index, tile in enumerate(self.grid)
+                                                    if tile.editable]))
+            file.write("Grid: %s" % str(self.get_values()))
+
+    def read_from_file(self, file):
+        with open(file, "r"):
+            # "High score: " + self.higscore+ " \n" = file.readline() TODO keep working on this
+            file.write("Unchangeable: %s \n" % str([index for index, tile in enumerate(self.grid)
+                                                    if tile.editable]))
+            file.write("Grid: %s" % str(self.get_values()))
+            file.truncate()
 
 
 class SudokuTile(Button):  # 40x40 rough guess
@@ -395,18 +411,18 @@ def display_buttons(menu):
 # TODO add more options / add a scroll bar
 # For scroll bar https://code.google.com/archive/p/ezscroll/downloads
 def change_staring_help():
-    global Help_type, Index_help_type
-    Index_help_type = (Index_help_type + 1) % len(Help_type)
-    buttons["Options"]["Starting help"].change_text("Starting help ("+Help_type[Index_help_type]+")")
+    global help_type, index_help_type
+    index_help_type = (index_help_type + 1) % len(help_type)
+    buttons["Options"]["Starting help"].change_text("Starting help ("+help_type[index_help_type]+")")
     buttons["Options"]["Starting help"].draw()
 
 
 def change_difficulty():
-    global Difficulty, buttons  
+    global difficulty, buttons  
     options = ["Easy", "Medium", "Hard", "Fiendish"]
-    Difficulty = options[(options.index(Difficulty)+1) % len(options)]
-    buttons["Options"]["Difficulty"].change_text("Difficulty ("+str(Difficulty)+")")
-    buttons["Options"]["Difficulty"].draw()
+    difficulty = options[(options.index(difficulty)+1) % len(options)]
+    buttons["Options"]["difficulty"].change_text("difficulty ("+str(difficulty)+")")
+    buttons["Options"]["difficulty"].draw()
 # </editor-fold>
 
 
@@ -774,7 +790,7 @@ def intersection_removal(appearance_grid):
 
 # <editor-fold desc="Generate Problem">
 def generate_problem(grid_class):
-    # Difficulty is a global variable specifying which functions I can use
+    # difficulty is a global variable specifying which functions I can use
     tile_indexes = [x for x in range(81)]
     random.shuffle(tile_indexes)
     for index in tile_indexes:

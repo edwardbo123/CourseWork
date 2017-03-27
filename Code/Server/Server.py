@@ -12,7 +12,7 @@ TABLE = "Sudoku_seeds"
 CONNECTION = (HOST, UNIX_SOCKET, USER, PASSWORD, DB, TABLE)
 
 # </editor-fold>
-#### throw a try except error if no server up
+# TODO throw a try except error if no server up
 # <editor-fold desc="Initialise the class I use for Trees, used to represent the ID.">
 
 
@@ -31,7 +31,7 @@ class Node:  # This is a pseudo Tree class, where the only nodes that have data 
 
 def identical_trees(root1, root2):  # This will check if the two nodes have identical children and
     # thus are identical Sudoku problems
-    try: # TODO re-write this could replace entier thing by just checking 1 value against the list
+    try:  # TODO re-write this could replace entire thing by just checking 1 value against the list
         if root1.get_type() == root2.get_type():  # If the two objects are part of the Node class,
             #  if not trigger an AttributeError
             for child1, child2 in itertools.product(root1.get_children(), root2.get_children()):
@@ -130,7 +130,7 @@ def generate_completed_grid():
 
 
 def rotation(array, rotation_angle, length):  # uses matrix rotation
-    try: # TODO re-write this
+    try:
         length = length[0]
     except (AttributeError, TypeError):
         pass
@@ -149,7 +149,7 @@ def rotation(array, rotation_angle, length):  # uses matrix rotation
             return length - x, y
 
         rotated_array = turn(array, rotate_to, length)
-    try: # TODO re-write this
+    try:
         return rotated_array
 
     except NameError:
