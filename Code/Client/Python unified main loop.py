@@ -171,8 +171,8 @@ class SudokuGrid(pygame.Rect):
         self.source = source
 
     def initialise_values(self):
-        self.define_tiles(self)
-        self.generate_new_puzzle(self)
+        self.define_tiles()
+        self.generate_new_puzzle()
 
     def get_values(self):
         return [tile.get_value for tile in self.grid]
@@ -267,7 +267,7 @@ class SudokuGrid(pygame.Rect):
         global difficulty
         # self.set_grid_values(generate_problem(shuffle_grid(get_seed()), difficulty))
         self.set_grid_values(shuffle_grid(eval(input("81 long list"))))
-        generate_problem(self)
+        generate_problem()
 
     def write_to_text(self, file):  # TODO use JSON files
         with open(file, "w"):
@@ -402,7 +402,7 @@ def display_buttons(menu):
         try:
             button.update()
         except TypeError:
-            button.update("all")  # TODO generate a new problem as well
+            button.update("all")
 
 # </editor-fold>
 
@@ -437,12 +437,6 @@ def give_hint(sudokugrid):
     # only possible value for tile
     # only unique number in grid or row/column
     print("give_hint function incomplete")
-    pass
-
-
-def solve_grid(sudokugrid):  # solves the grid
-
-    print("solve_grid function incomplete")
     pass
 # </editor-fold>
 
@@ -480,22 +474,12 @@ def handle_click(left_click, mouse_pos):
                     pass
             else:
                 function()
-
-
-def game_main(sudoku_gird):  # runs the main loop of the sudoku grid
-    # TODO work on this
-    for tile in sudoku_gird:
-        tile.draw()
-        tile.update()
-    print("sudoku_main function incomplete")
-    pass
 # </editor-fold>
 
 
 # <editor-fold desc="Generate problem from seed">
 # TODO work on this after pi
 def shuffle_grid(grid):
-    # some rotations if repeated can dupe keep in mind
     shuffle_type = [rotation, grid_column_swap, set_random_numbers]  # all functions
     # need column_swap
     random.shuffle(shuffle_type)
