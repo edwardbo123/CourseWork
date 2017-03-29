@@ -1,6 +1,9 @@
 <component name="ProjectDictionaryState">
   <dictionary name="98eb12">
     <words>
+      <w>recv</w>
+      <w>reuseaddr</w>
+      <w>setsockopt</w>
       <w>subgrid</w>
       <w>subgrids</w>
       <w>sudoku</w>

@@ -1,6 +1,8 @@
-import MySQLdb
-import random
 import itertools
+import random
+
+# noinspection PyUnresolvedReferences
+import MySQLdb
 
 # <editor-fold desc="Connection info">
 HOST = "localhost"
@@ -10,6 +12,7 @@ PASSWORD = "Lemon26"
 DB = 'SudokuDB'
 TABLE = "Sudoku_seeds"
 CONNECTION = (HOST, UNIX_SOCKET, USER, PASSWORD, DB, TABLE)
+
 
 # </editor-fold>
 # TODO throw a try except error if no server up
@@ -24,7 +27,8 @@ class Node:  # This is a pseudo Tree class, where the only nodes that have data 
     def get_children(self):  # This will return all of this node's child nodes
         return self.children
 
-    def get_type(self):  # This function will test (when comparing two Trees)
+    @staticmethod
+    def get_type():  # This function will test (when comparing two Trees)
         # if the current object is a node class or a list
         return True
 
@@ -45,6 +49,7 @@ def identical_trees(root1, root2):  # This will check if the two nodes have iden
         if root1 == root2:
             return True
 
+
 # </editor-fold>
 
 # <editor-fold desc="Code for interacting with the server">
@@ -59,7 +64,7 @@ def set_cursor(connection):
 
 def upload_seed(cursor, key, grid, table):
     # TODO convert grid into an int and make sure write_key has a good output
-    cursor.execute("INSERT INTO "+table+"(seedTree, grid) VALUES ([" + write_key(key) + "],[" + grid + "]")
+    cursor.execute("INSERT INTO " + table + "(seedTree, grid) VALUES ([" + write_key(key) + "],[" + grid + "]")
 
 
 def write_key(key, string=""):
@@ -93,6 +98,7 @@ def upload_key(key, grid, connection):
     if not check_keys(get_keys(cursor), key):
         upload_seed(cursor, key, grid, table)
 
+
 # </editor-fold>
 
 # <editor-fold desc="Generate seed code. Seen in the file of the same name.">
@@ -123,6 +129,7 @@ def place_cell(sudoku_grid, c=0):
 def generate_completed_grid():
     sudoku_grid = [None for _ in itertools.repeat(None, 81)]
     return place_cell(sudoku_grid)
+
 
 # </editor-fold>
 
@@ -196,6 +203,7 @@ def generate_key(grid):
             for _ in itertools.repeat(None, 3):
                 change_dict = {index[x]: x_value for x, x_value in enumerate(check_lists[StartIndex][:9])}
                 tile_indexed.append([change_dict[x] for x in check_lists[StartIndex][9:]])
+                # noinspection PyTypeChecker
                 index = rotation(index, 90, 2)
         full_list.append(tile_indexed)
     return full_list
@@ -206,15 +214,16 @@ def get_children(array, verbose=False):
         print(array)
         print(all([isinstance(value, list) for value in array]))
 
-    if all([isinstance(value, list) for value in array]):
+    if type(array[0]) == list:
         return Node([get_children(child, verbose) for child in array])
 
     else:
-        return array 
+        return array
 
 
 def generate_seed(grid, verbose=False):
     return get_children(generate_key(grid), verbose)
+
 
 # </editor-fold>
 
@@ -234,13 +243,13 @@ if __name__ == "main":
 
 # <editor-fold desc="Old code for running the server.">
 '''
-# client sends a message "Puzzle" to this ip (encyrption)
+# client sends a message "Puzzle" to this ip (encryption)
 # add code to queue
 # This code responds with a seed (and seed index) from a file
 # client sends a file received message, timeouts exist.
 # Close connection
 
-# client sends "High score, seed index, Difficulty" to this ip (encyrption)
+# client sends "High score, seed index, Difficulty" to this ip (encryption)
 # add info to queue
 # server sends received, timeout exists back to client ip
 # client closes connection
