@@ -81,7 +81,7 @@ init()
 
 # <editor-fold desc="Classes">
 # Done
-class Button (pygame.Rect):  # use private increasing values (uuid)
+class Button (pygame.Rect):
     """
     Class for the on screen buttons (these will be what the user interacts with)
     """
@@ -91,11 +91,12 @@ class Button (pygame.Rect):  # use private increasing values (uuid)
         self.left, self.top, self.width, self.height = left, top, width, height
         self.text = text
         self.function = function
-        self.fill_type = fill_type  # Consider replacing with fill function
-        self.Colour = colour  # Consider replacing with fill function
+        self.fill_type = fill_type
+        self.Colour = colour
         self.args = args
         self.source = source
         self.text_colour = text_colour
+
         
     def draw(self):
         pygame.draw.rect(self.source, (190, 190, 190), self)
@@ -105,7 +106,7 @@ class Button (pygame.Rect):  # use private increasing values (uuid)
             pygame.draw.rect(self.source, self.Colour, self)
         self.init_render_font_to_rect()
         self.update()
-        
+
     def init_render_font_to_rect(self):
         font_sizes = []
         breaks = self.text.count("\n")
@@ -132,14 +133,12 @@ class Button (pygame.Rect):  # use private increasing values (uuid)
         FONT.render_to(self.source, (((self.left+self.width / 2)-font_rect.width / 2),
                                      (self.top+(self.height*count/(breaks+2)))-(font_rect.height / 2)),
                        text, self.text_colour, size=font_size)
-#        FONT.render_to(self.source,(0,0),self.text,self.text_colour,None,0,0,increment)
 
     def calc_font_size(self, text, breaks):
         end_while = False
         increment = 10
-#        font_sizes = FONT.get_sizes()
         while not end_while:
-            font_rect = FONT.get_rect(text, size=increment)  # Could me more efficient
+            font_rect = FONT.get_rect(text, size=increment)
             if font_rect.height > (self.height/(breaks+1)) or font_rect.width > (2/3)*self.width:
                 increment -= 1
                 end_while = True
@@ -174,13 +173,13 @@ class SudokuGrid(pygame.Rect):
         self.define_tiles()
         self.generate_new_puzzle()
 
-    def get_values(self):
+    def get_all_values(self):
         return [tile.get_value for tile in self.grid]
 
     def get_column(self, index, column_number=False):
         if not column_number:
             index %= 9
-        return tuple(self.grid[index::9])  # returning the sudoku tiles not values
+        return tuple(self.grid[index::9])
 
     def get_row(self, index, row_number=False):
         if not row_number:
@@ -198,9 +197,6 @@ class SudokuGrid(pygame.Rect):
 
         column_number *= 3
         row_number *= 3
-#        First_row = [self.grid[x+y*9:x+y*9+4]]
-#        Second_row = [self.grid[x+(y+1)*9:x+(y+1)*9+4]]
-#        Third_row = [self.grid[x+(y+2)*9:x+(y+2)*9+4]]
         sub_grid = [self.grid
                     [row_number+(column_number+row_increment)*9:
                      row_number+(column_number+row_increment)*9+3]
@@ -275,14 +271,14 @@ class SudokuGrid(pygame.Rect):
             file.write("High score: %s \n" % str(self.highscore))
             file.write("Unchangeable: %s \n" % str([index for index, tile in enumerate(self.grid)
                                                     if tile.editable]))
-            file.write("Grid: %s" % str(self.get_values()))
+            file.write("Grid: %s" % str(self.get_all_values()))
 
     def read_from_file(self, file):
         with open(file, "r"):
             # "High score: " + self.higscore+ " \n" = file.readline() TODO keep working on this
             file.write("Unchangeable: %s \n" % str([index for index, tile in enumerate(self.grid)
                                                     if tile.editable]))
-            file.write("Grid: %s" % str(self.get_values()))
+            file.write("Grid: %s" % str(self.get_all_values()))
             file.truncate()
 
 
@@ -778,7 +774,7 @@ def generate_problem(grid_class):
     tile_indexes = [x for x in range(81)]
     random.shuffle(tile_indexes)
     for index in tile_indexes:
-        value = grid_class.get_values()
+        value = grid_class.get_all_values()
         grid_class.set_value(index, None)
         if not try_to_solve(grid_class):
             grid_class.set_value(index, value)
