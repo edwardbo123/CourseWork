@@ -1,24 +1,33 @@
 import itertools
 import random
-
-# noinspection PyUnresolvedReferences
-import MySQLdb
+import mysql.connector
 
 # <editor-fold desc="Connection info">
-HOST = "localhost"
-UNIX_SOCKET = '/tmp/mysql.sock'
-USER = 'Server'
-PASSWORD = "Lemon26"
+# HOST = "86.166.206.240"
+# HOST = "10.0.72.132"
+HOST = "192.168.1.124"
+# UNIX_SOCKET = '/var/run/mysqld/mysqld.sock'
+USER = "seedUpload"  # TODO need this
+PASSWORD = "Lemon26"  # TODO need this
 DB = 'SudokuDB'
 TABLE = "Sudoku_seeds"
-CONNECTION = (HOST, UNIX_SOCKET, USER, PASSWORD, DB, TABLE)
+CONNECTION = {
+    'host': HOST,
+    'port': 3306,
+    'database': DB,
+    'user': USER,
+    'password': PASSWORD,
+    'charset': 'utf8',
+    'use_unicode': True,
+    'get_warnings': True,
+}
 
 
 # </editor-fold>
 # TODO throw a try except error if no server up
 # <editor-fold desc="Initialise the class I use for Trees, used to represent the ID.">
 
-
+"""
 class Node:  # This is a pseudo Tree class, where the only nodes that have data are the leaf nodes,
     # this will be used for the ID of the sudoku grids
     def __init__(self, children):  # TODO Could replace with just lists
@@ -48,7 +57,7 @@ def identical_trees(root1, root2):  # This will check if the two nodes have iden
     except AttributeError:
         if root1 == root2:
             return True
-
+"""
 
 # </editor-fold>
 
@@ -56,49 +65,45 @@ def identical_trees(root1, root2):  # This will check if the two nodes have iden
 
 
 # TODO handle multiple HighScores > 5
-def set_cursor(connection):
-    conn = MySQLdb.connect(host=connection[0], unix_socket=connection[1],
-                           user=connection[2], passwd=connection[3], db=connection[4])
-    return conn.cursor()
-
-
-def upload_seed(cursor, key, grid, table):
-    # TODO convert grid into an int and make sure write_key has a good output
-    cursor.execute("INSERT INTO " + table + "(seedTree, grid) VALUES ([" + write_key(key) + "],[" + grid + "]")
-
-
-def write_key(key, string=""):
-    for child in key.get_children():
-        if child.__class__.__name__ != "Node":
-            string += str(child)
-        else:
-            write_key(child, string)
-    return str(string + "\n")
-
-
-def read_id(key):
-    key.find("\n")  # TODO work on this
-
-
-def get_keys(cursor):
-    yield read_id(cursor.execute("SELECT seedTree FROM " + TABLE))
-
-
-def check_keys(generator, key):
-    for gen_id in generator:
-        if identical_trees(gen_id, key):
-            return True
+"""
+def node_to_list_grid(node, array=[]):
+    children = node.get_children()
+    if type(children[0]) is Node:
+        while len(children) != 0:
+            array += node_to_list_grid(children.pop(0), array)
     else:
-        return False
+        array += children
+        del children
+# https://intellij-support.jetbrains.com/hc/en-us/articles/206544869-Configuring-JVM-options-and-platform-properties
+    return array
+"""
 
 
-def upload_key(key, grid, connection):
-    cursor = set_cursor(connection)
-    table = connection[5]
-    if not check_keys(get_keys(cursor), key):
-        upload_seed(cursor, key, grid, table)
+def generate_upload_grid(db, cur, table):  # todo only adds 2
+    # cur.execute("desc " + table)
+    # print(cur.fetchall())
+    cur.execute("SELECT grid FROM " + table)
+    uploaded_grids = cur.fetchall()
+    uploaded_grids = [uploaded_grid[0] for uploaded_grid in uploaded_grids]
+    while True:
+        grid = generate_completed_grid()
+        print(len(generate_key(grid)[0]))
+        print("end")
+        if not any([[int(uploaded_grid_char) for uploaded_grid_char in str(uploaded_grid)]
+                    in sum(generate_key(grid), []) for uploaded_grid in uploaded_grids]):
+            grid = str("".join(map(str, grid)))
+            uploaded_grids.append(grid)
+            cur.execute("INSERT INTO " + table + "(grid) VALUES ('" + str("".join(map(str, grid))) + "')")
+            db.commit()
 
 
+def establish_connection(connection_address):
+    db = mysql.connector.Connect(**connection_address)
+    db.start_transaction(isolation_level='READ COMMITTED')
+    cur = db.cursor(buffered=True)
+    return db, cur
+
+# D:\Edward\CourseWork\Code\Server
 # </editor-fold>
 
 # <editor-fold desc="Generate seed code. Seen in the file of the same name.">
@@ -208,7 +213,7 @@ def generate_key(grid):
         full_list.append(tile_indexed)
     return full_list
 
-
+"""
 def get_children(array, verbose=False):
     if verbose:
         print(array)
@@ -223,21 +228,19 @@ def get_children(array, verbose=False):
 
 def generate_seed(grid, verbose=False):
     return get_children(generate_key(grid), verbose)
-
+"""
 
 # </editor-fold>
 
 # <editor-fold desc="Runs the code.">
 
-
-def run_server(connection):
-    grid = generate_completed_grid()
-    upload_key(generate_seed(grid), grid, connection)
-
-
-if __name__ == "main":
-    while True:
-        run_server(CONNECTION)
+# if __name__ == "main":
+# while True:
+# run_server(CONNECTION)
+# print(node_to_list_grid(generate_seed(generate_completed_grid())))
+# exit()
+db, cur = establish_connection(CONNECTION)
+generate_upload_grid(db, cur, TABLE)
 
 # </editor-fold>
 
