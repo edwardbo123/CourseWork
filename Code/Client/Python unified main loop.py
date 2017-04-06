@@ -3,16 +3,16 @@ import random
 import pygame
 import itertools
 import pygame.freetype
+import mysql.connector
+from time import time
 # from pygame import *
 # import time
 # import _mysql
 # </editor-fold>
-# TODO Throw a try except if no server up
-# TODO look up mapping
 # <editor-fold desc="Initial measurement definitions">
 # https://docs.python.org/3/library/functions.html
 
-global DIMENSIONS, index_help_type, difficulty
+# global DIMENSIONS, index_help_type, difficulty, HOSTS, CONNECTION
 DIMENSIONS = {
     "Main": {"X": 360,
              "Y": 390},
@@ -32,12 +32,15 @@ def init():
     """
     pygame.init()
     pygame.freetype.init()
+    # noinspection PyGlobalUndefined
     global Screen
     Screen = pygame.display.set_mode((DIMENSIONS["Main"]["X"], DIMENSIONS["Main"]["Y"]))
     Screen.convert_alpha(Screen)
     Screen.fill((190, 190, 190))
+    # noinspection PyGlobalUndefined
     global FONT
     FONT = pygame.freetype.Font("comic.ttf")
+    # noinspection PyGlobalUndefined
     global last_clicked_on
     last_clicked_on = None
     init_options()
@@ -47,6 +50,7 @@ def init_options():  # have option to pull from database
     """
     Initialises all the constants and global variables
     """
+    # noinspection PyGlobalUndefined
     global help_type, index_help_type, difficulty
     # help_type = [easy, medium, difficult]  # functions
     help_type = ["easy", "medium", "difficult"]  # TODO replace these with functions
@@ -55,6 +59,7 @@ def init_options():  # have option to pull from database
 
 
 def init_buttons():
+    # noinspection PyGlobalUndefined
     global buttons
     global index_help_type
     global difficulty
@@ -72,10 +77,31 @@ def init_buttons():
                  "Save": Button(DIMENSIONS["Game"]["Button_left"], 43*4, 180, 78, save, "Outline", "Save"),
                  "Return to Main Menu": Button(DIMENSIONS["Game"]["Button_left"], 43*7, 180, 78,
                                                swap_screen, "Outline", "Return to \n main menu", "Main"),
-                 "Grid": SudokuGrid()}
+                 "Grid": SudokuGrid()},
+        "High_score": {}
                 }  # TODO add solve button or append it on to help
     swap_screen("Main")
 init()
+# </editor-fold>
+
+
+# <editor-fold desc="Connection info">
+HOSTS = ["192.168.1.124", "86.166.206.240"]
+# HOST = "10.0.72.132"
+USER = "Client"
+PASSWORD = "za:cJ)2Hc~Y;%F5r"
+DB = 'SudokuDB'
+TABLE = "Sudoku_seeds"
+CONNECTION = {
+    'host': HOSTS[0],
+    'port': 3306,
+    'database': DB,
+    'user': USER,
+    'password': PASSWORD,
+    'charset': 'utf8',
+    'use_unicode': True,
+    'get_warnings': True,
+}
 # </editor-fold>
 
 
@@ -96,7 +122,6 @@ class Button (pygame.Rect):
         self.args = args
         self.source = source
         self.text_colour = text_colour
-
         
     def draw(self):
         pygame.draw.rect(self.source, (190, 190, 190), self)
@@ -168,10 +193,27 @@ class SudokuGrid(pygame.Rect):
         self.left, self.top, self.width, self.height = 87, 22, 386, 386
         self.grid = []
         self.source = source
+        self.pre_time_elapsed = 0
+        self.start_time = int
+        self.pre_changes = 0
 
     def initialise_values(self):
         self.define_tiles()
-        self.generate_new_puzzle()
+        tile_values, high_score = load()
+        if tile_values:
+            for index, tile in enumerate(self.grid):
+                if len(tile_values[index][0]) == 1:
+                    tile.value = tile_values[index][0]
+                else:
+                    tile.set_dummy_values([value for value in tile_values[index][0]])
+                if tile_values[index][1] == "False":
+                    tile.change_editable()
+                self.pre_changes = high_score[0]
+                self.pre_time_elapsed = high_score[1]
+        else:
+            self.generate_new_puzzle()
+
+        self.start_time = time()
 
     def get_all_values(self):
         return [tile.get_value for tile in self.grid]
@@ -203,6 +245,10 @@ class SudokuGrid(pygame.Rect):
                     for row_increment in range(3)]
         return tuple(sum(sub_grid, []))
 
+    def get_high_score(self):
+        return [sum([tile.changes for tile in self.grid]) + self.pre_changes,
+                self.pre_time_elapsed + time() - self.start_time]
+
     def get_grid(self):
         return tuple(self.grid)
 
@@ -213,6 +259,7 @@ class SudokuGrid(pygame.Rect):
             self.grid.append(SudokuTile(location[1], location[0], None))
 
     def draw(self):
+        # noinspection PySimplifyBooleanCheck
         if self.grid == []:
             self.define_tiles()
         pygame.draw.rect(self.source, pygame.Color(0, 0, 0), self)
@@ -261,9 +308,8 @@ class SudokuGrid(pygame.Rect):
 
     def generate_new_puzzle(self):
         global difficulty
-        # self.set_grid_values(generate_problem(shuffle_grid(get_seed()), difficulty))
-        self.set_grid_values(shuffle_grid(eval(input("81 long list"))))
-        generate_problem()
+        self.set_grid_values(generate_problem(shuffle_grid(get_completed_grid_values(establish_connection())),
+                                              difficulty))
 
     def write_to_text(self, file):  # TODO use JSON files
         with open(file, "w"):
@@ -281,11 +327,34 @@ class SudokuGrid(pygame.Rect):
             file.write("Grid: %s" % str(self.get_all_values()))
             file.truncate()
 
+    def is_completed(self):
+        tile_values = self.get_all_values()
+        for index, tile_value in enumerate(tile_values):
+            if not tile_value:  # If blank
+                return False
+
+            if tile_value in tile_values[index % 9::9]:  # If same value in column
+                return False
+
+            if tile_value in tile_values[index//9:(index//9 +1)*9]:  # If same value in row
+                return False
+
+            column_number, row_number = divmod(index, 3)
+            column_number *= 3
+            row_number *= 3
+            sub_grid = sum([tile_values[(row_number + (column_number + row_increment) * 9):
+                                        (row_number + (column_number + row_increment) * 9 + 3)]
+                            for row_increment in range(3)], [])
+            if tile_value in sub_grid:  # If same value in sub_grid
+                return False
+
+        return True
+
 
 class SudokuTile(Button):  # 40x40 rough guess
     new_index = 0
 
-    def __init__(self, left, top, value, dummy_values=[False for _ in range(9)], editable=True):
+    def __init__(self, left, top, value, dummy_values=[False for _ in range(9)], editable=True, changes=0):
         self.left, self.top = left, top
         self.function = None
         self.value = value
@@ -297,7 +366,7 @@ class SudokuTile(Button):  # 40x40 rough guess
         self.Colour = pygame.Color(255, 255, 255)
         super().__init__(self.left, self.top, 40, 40, None, "Fill",
                          colour=self.Colour, text_colour=pygame.Color(0, 0, 0))
-        # TODO remove text argument
+        self.changes = changes
         # 40 is tile width/height
 
     def __hash__(self):
@@ -326,9 +395,12 @@ class SudokuTile(Button):  # 40x40 rough guess
         self.editable = not self.editable
 
     def set_value(self, value):  # if want use help and stuff (options)
+        global buttons
         self.value = value
         self.dummy_values = [False for _ in range(9)]
         self.change_text(value)
+        if buttons["Game"][3].is_completed:
+            swap_screen("High_score")
 
     def set_color(self, new_colour_rgb):
         self.Colour = new_colour_rgb
@@ -368,11 +440,13 @@ class SudokuTile(Button):  # 40x40 rough guess
             else:
                 self.set_dummy_values(number)
             self.draw()
+            self.changes += 1
 # </editor-fold>
 
 
 # <editor-fold desc="Swap Screen">
 def swap_screen(menu):
+    # noinspection PyGlobalUndefined
     global Screen, DIMENSIONS, current_menu, buttons
     current_menu = menu
     if menu in DIMENSIONS.keys():
@@ -448,6 +522,8 @@ def input_handle():
         elif event.type == pygame.KEYDOWN and event.key in range(49, 58):
             try:
                 last_clicked_on[0].edit(last_clicked_on[1], event.unicode)
+
+                # TODO check if user completed
             except AttributeError:
                 pass
 
@@ -474,7 +550,6 @@ def handle_click(left_click, mouse_pos):
 
 
 # <editor-fold desc="Generate problem from seed">
-# TODO work on this after pi
 def shuffle_grid(grid):
     shuffle_type = [rotation, grid_column_swap, set_random_numbers]  # all functions
     # need column_swap
@@ -544,7 +619,7 @@ def grid_column_swap(grid):
         grid[y*9+grid_columns[0]:y*9+grid_columns[0]+3], grid[y*9+grid_columns[1]:y*9+grid_columns[1]+3] \
             = grid[y*9+grid_columns[1]:y*9+grid_columns[1]+3], grid[y*9+grid_columns[0]:y*9+grid_columns[0]+3]
         #  Grid[y*9+Grid_columns[1]:y*9+Grid_columns[1]+3] = temp_row
-        return grid
+    return grid
 # </editor-fold>
 
 
@@ -810,19 +885,105 @@ def try_to_solve(grid):
 
 # </editor-fold>
 
+# TODO work on making sure grid is correct ie the user has completed the game
+
 
 # <editor-fold desc="Interaction with SQL server">
-# TODO work on this after pi
-def get_seed():  # pull random seed (find a server storage thing)
-    pass
+def establish_connection():
+    global CONNECTION, HOSTS
+    while True:
+        try:
+            db = mysql.connector.Connect(**CONNECTION)
+        except mysql.connector.errors.InterfaceError:
+            if CONNECTION['host'] != HOSTS[1]:
+                CONNECTION['host'] = HOSTS[1]
+                print("Server unreachable, trying local IP")
+                continue
+            else:
+                print("Server down please try again")
+                exit()
+        break
+    print("Connection established")
+    db.start_transaction(isolation_level='READ COMMITTED')
+    cur = db.cursor(buffered=True)
+    return [db, cur]
 
 
-def submit_high_score_to_server(actions, time, name):
-    # submits users high score to server after they finish puzzle
-    # id could be pair of name + mac address of computer or just force names to be unqiue
-    # like downloading sudoku grids, only do once 100% done
-    print("submit_high_score_to_server function incomplete")
-    pass
+def get_completed_grid_values(connection):  # pull random seed (find a server storage thing)
+    # noinspection PyGlobalUndefined
+    global table
+    db = connection[0]
+    cur = connection[1]
+    cur.execute("SELECT grid FROM " + table + " ORDER BY RAND() LIMIT 1")
+    completed_grid_values = cur.fetchall()
+    db.close()
+    return completed_grid_values
+
+
+def make_new_top_5(user_score, current_high_scores, user_name, current_names):
+    for index, value in enumerate(current_high_scores):
+        if user_score > value:
+            user_index = index
+            break
+    new_highs_scores = current_high_scores[:user_index] + user_score + current_high_scores[user_index:]
+    new_names = current_names[:user_index] + user_name + current_names[user_index:]
+    stuff_to_upload = ["".join(new_highs_scores[index]) + "|" + "".join(new_names[index]) for index in range(5)]
+    return stuff_to_upload
+
+
+def upload_high_score(cur, grid, column_number, field_values):
+    if column_number:
+        column = "highChange"
+    else:
+        column = "highTime"
+
+    cur.execute(
+        "UPDATE " + column + " FROM " + table + " VALUES" + str(field_values) + "WHERE grid = " + grid)
+
+
+def check_and_upload_user_high_scores(connection, sudoku_grid):
+    global table
+    db = connection[0]
+    cur = connection[1]
+    grid = "".join(sudoku_grid.get_all_values)
+    high_scores, high_scores_names = get_high_scores(db, cur, table, grid)
+    player_changes, player_time = sudoku_grid.get_high_score()
+    user_high_scores = [player_changes, player_time]
+    if any(user_high_scores[high_score_index] < high_scores[high_score_index][-1] for high_score_index in range(2)):
+        # TODO get user name somehow
+        if all(user_high_scores[high_score_index] < high_scores[high_score_index][-1] for high_score_index in range(2)):
+            for index, high_score_table in enumerate(high_scores):
+                stuff_to_upload = make_new_top_5(player_changes, high_score_table, user_name, high_scores_names[index])
+                upload_high_score(cur, grid, index, stuff_to_upload)
+
+        else:
+            for index, high_score_table in enumerate(high_scores):
+                if user_high_scores[index] < high_score_table[-1]:
+                    stuff_to_upload = make_new_top_5(player_changes, high_score_table, user_name,
+                                                     high_scores_names[index])
+                    upload_high_score(cur, grid, index, stuff_to_upload)
+    else:
+        # display unfortunately you didn't reach a top score
+        pass
+
+    # display top scores
+    db.commit()
+
+    db.close()
+
+
+def get_high_scores(db, cur, table, grid):  # TODO allow nicknames
+    cur.execute("SELECT highTime FROM " + table + "WHERE grid = " + grid)
+    high_time = cur.fetchall()
+    cur.execute("SELECT highChanges FROM " + table + "WHERE grid = " + grid)
+    high_changes = cur.fetchall()
+    high_scores = [high_changes + high_time]
+    high_scores = [[value for value in high_score[:high_score.index("|")]]
+                   for high_score in high_scores]
+    high_score_names = [[value for value in high_score[high_score.index("|"):]]
+                        for high_score in high_scores]
+    return high_scores, high_score_names
+
 # </editor-fold>
 
 
@@ -831,16 +992,31 @@ def save(grid):
     for tile in grid:
         value = tile.get_value()
         if value:
-            write_to_file += str(value), str(tile.get_editable())
+            write_to_file += str(value) + "|" + str(tile.get_editable())
         else:
-            write_to_file += str(tile.get_dummy_values()), True
+            write_to_file += "".join(tile.get_dummy_values) + "|" + "True"
         write_to_file += ","
     write_to_file += "\n"
+    high_score = grid.get_high_score()
+    write_to_file += str(high_score[0]) + "|" + str(high_score[1])
+
     # TODO get it to write high scores to file
     with open("Save", 'w') as f:
         f.write(write_to_file)
         f.close()
 
+
+def load():
+    with open("Save", "r+") as f:
+        lines = f.readlines()
+        if not lines[0]:
+            return False
+        else:
+            tiles_info = lines[0].spilt(',')
+            tiles_info = [tile_info.spilt('|') for tile_info in tiles_info]
+            high_score = lines[1].spilt('|')
+        f.truncate()
+        return tiles_info, high_score
 
 if __name__ == "__main__":
     init_buttons()
