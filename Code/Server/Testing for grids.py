@@ -52,7 +52,7 @@ def rotation(rotation_angle, array, length=9):  # uses matrix rotation
 
 
 def turn(array, rotate_to, length):
-    rotated_array = [_ for _ in itertools.repeat(None, (length + 1) ** 2)]
+    rotated_array = [None for _ in range((length + 1) ** 2)]
     for index, index_value in enumerate(array):
         y, x = divmod(index, length + 1)
         new_y, new_x = (rotate_to(x, y))

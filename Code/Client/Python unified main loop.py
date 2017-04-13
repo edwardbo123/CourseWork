@@ -78,7 +78,9 @@ def init_buttons():
                  "Return to Main Menu": Button(DIMENSIONS["Game"]["Button_left"], 43*7, 180, 78,
                                                swap_screen, "Outline", "Return to \n main menu", "Main"),
                  "Grid": SudokuGrid()},
-        "High_score": {}
+        "High_Score_Input": {"Get Name": TextBox(90, 7*39, 180, 78, upload_new_high_score),
+                             "High_Score_Message": Button(90, 39, 180, 78, None, "Fill", colour=pygame.Color(190, 190, 190))},
+        "High_score_Tables": {}
                 }  # TODO add solve button or append it on to help
     swap_screen("Main")
 init()
@@ -106,7 +108,6 @@ CONNECTION = {
 
 
 # <editor-fold desc="Classes">
-# Done
 class Button (pygame.Rect):
     """
     Class for the on screen buttons (these will be what the user interacts with)
@@ -122,7 +123,7 @@ class Button (pygame.Rect):
         self.args = args
         self.source = source
         self.text_colour = text_colour
-        
+
     def draw(self):
         pygame.draw.rect(self.source, (190, 190, 190), self)
         if self.fill_type == "Outline":
@@ -179,9 +180,38 @@ class Button (pygame.Rect):
             return self, self.function, self.args
         else:
             return False, None, None
-        
+
     def change_text(self, new_text):
-        self.text = new_text
+        self.text = str(new_text)
+
+
+class TextBox(Button):
+    def __init__(self, left, top, width, height, function, args=None, max_values=10, text="",
+                 colour=pygame.Color(0, 0, 0), source=Screen, text_colour=pygame.Color(0, 0, 0)):
+        self.left, self.top, self.width, self.height = left, top, width, height
+        self.text = text
+        self.Colour = colour
+        self.source = source
+        self.text_colour = text_colour
+        self.max_values = max_values
+        self.function = function
+        self.args = args
+        super().__init__(self.left, self.top, self.width, self.height, None, "Fill",
+                         colour=self.Colour, text_colour=self.text_colour)
+
+    def edit(self, event):
+        if (event.key == 8 or event.key == 127 or event.key == 266) and len(self.text) > 0:
+            self.text = "".join(list(self.text)[:-1])
+        elif event.key in range(49, 58) and len(self.text) != 10:
+            self.text += event.unicode
+        elif event.key == 13:
+            self.function(self.text, self.args)
+            # TODO upload new highscores and set current highscores to these
+
+            swap_screen("High_score_Tables")
+
+    def set_args(self, new_args_list):
+        self.args = new_args_list
 
 
 class SudokuGrid(pygame.Rect):
@@ -216,7 +246,7 @@ class SudokuGrid(pygame.Rect):
         self.start_time = time()
 
     def get_all_values(self):
-        return [tile.get_value for tile in self.grid]
+        return [tile.get_value() for tile in self.grid]
 
     def get_column(self, index, column_number=False):
         if not column_number:
@@ -230,18 +260,18 @@ class SudokuGrid(pygame.Rect):
 
     def get_sub_grid(self, index, grid_number=False):
         if not grid_number:
-            column_number, row_number = divmod(index, 9)
+            row_number, column_number = divmod(index, 9)
             column_number //= 3
             row_number //= 3
 
         else:
-            column_number, row_number = divmod(index, 3)
+            row_number, column_number = divmod(index, 3)
 
         column_number *= 3
         row_number *= 3
         sub_grid = [self.grid
-                    [row_number+(column_number+row_increment)*9:
-                     row_number+(column_number+row_increment)*9+3]
+                    [column_number+(row_number+row_increment)*9:
+                    column_number+(row_number+row_increment)*9+3]
                     for row_increment in range(3)]
         return tuple(sum(sub_grid, []))
 
@@ -256,7 +286,7 @@ class SudokuGrid(pygame.Rect):
         SudokuTile.new_index = 0
         for tile in range(81):
             location = self.get_location(tile)
-            self.grid.append(SudokuTile(location[1], location[0], None))
+            self.grid.append(SudokuTile(location[1], location[0], ""))
 
     def draw(self):
         # noinspection PySimplifyBooleanCheck
@@ -297,7 +327,8 @@ class SudokuGrid(pygame.Rect):
                          .union(set(self.get_row(index)), set(self.get_sub_grid(index)))):
             tile.set_color(color)
             tile.draw()
-            tile.update()
+
+        tile.update()
 
     def un_highlight(self, tile):
         self.highlight_adjacent([self.grid.index(tile), pygame.Color(255, 255, 255)])
@@ -307,9 +338,11 @@ class SudokuGrid(pygame.Rect):
             self.grid[index].set_value(value)
 
     def generate_new_puzzle(self):
-        global difficulty
-        self.set_grid_values(generate_problem(shuffle_grid(get_completed_grid_values(establish_connection())),
-                                              difficulty))
+        self.set_grid_values(shuffle_grid(get_completed_grid_values()))
+        values = self.get_all_values()
+        for x in range(9):
+            print(values[x*9:(x+1)*9])
+        generate_problem(self)
 
     def write_to_text(self, file):  # TODO use JSON files
         with open(file, "w"):
@@ -321,7 +354,7 @@ class SudokuGrid(pygame.Rect):
 
     def read_from_file(self, file):
         with open(file, "r"):
-            # "High score: " + self.higscore+ " \n" = file.readline() TODO keep working on this
+            # "High score: " + self.highscore+ " \n" = file.readline() TODO keep working on this
             file.write("Unchangeable: %s \n" % str([index for index, tile in enumerate(self.grid)
                                                     if tile.editable]))
             file.write("Grid: %s" % str(self.get_all_values()))
@@ -329,32 +362,37 @@ class SudokuGrid(pygame.Rect):
 
     def is_completed(self):
         tile_values = self.get_all_values()
-        for index, tile_value in enumerate(tile_values):
-            if not tile_value:  # If blank
-                return False
+        if all(tile_values):
+            for index, tile_value in enumerate(tile_values):
+                tile_values[index] = ""
+                if tile_value in tile_values[index % 9::9]:  # If same value in column
+                    print("column")
+                    return False
 
-            if tile_value in tile_values[index % 9::9]:  # If same value in column
-                return False
+                if tile_value in tile_values[index//9:(index//9 + 1)*9]:  # If same value in row
+                    print("row")
+                    return False
 
-            if tile_value in tile_values[index//9:(index//9 +1)*9]:  # If same value in row
-                return False
+                column_number, row_number = divmod(index, 9)
+                column_number //= 3
+                row_number //= 3
+                column_number *= 3
+                row_number *= 3
+                sub_grid = sum([tile_values[(row_number + (column_number + row_increment) * 9):
+                                            (row_number + (column_number + row_increment) * 9 + 3)]
+                                for row_increment in range(3)], [])
+                if tile_value in sub_grid:  # If same value in sub_grid
+                    return False
 
-            column_number, row_number = divmod(index, 3)
-            column_number *= 3
-            row_number *= 3
-            sub_grid = sum([tile_values[(row_number + (column_number + row_increment) * 9):
-                                        (row_number + (column_number + row_increment) * 9 + 3)]
-                            for row_increment in range(3)], [])
-            if tile_value in sub_grid:  # If same value in sub_grid
-                return False
-
-        return True
+            return True
+        else:
+            return False
 
 
 class SudokuTile(Button):  # 40x40 rough guess
     new_index = 0
 
-    def __init__(self, left, top, value, dummy_values=[False for _ in range(9)], editable=True, changes=0):
+    def __init__(self, left, top, value, dummy_values=[], editable=True, changes=0):
         self.left, self.top = left, top
         self.function = None
         self.value = value
@@ -394,13 +432,16 @@ class SudokuTile(Button):  # 40x40 rough guess
     def change_editable(self):
         self.editable = not self.editable
 
-    def set_value(self, value):  # if want use help and stuff (options)
+    def set_value(self, value, user_input=False):  # if want use help and stuff (options)
         global buttons
+        if user_input:
+            self.changes += 1
         self.value = value
-        self.dummy_values = [False for _ in range(9)]
+        if any(self.dummy_values):
+            self.dummy_values = []
         self.change_text(value)
-        if buttons["Game"][3].is_completed:
-            swap_screen("High_score")
+        if buttons["Game"]["Grid"].is_completed() and user_input:
+            swap_screen("High_Score_Input")
 
     def set_color(self, new_colour_rgb):
         self.Colour = new_colour_rgb
@@ -408,16 +449,47 @@ class SudokuTile(Button):  # 40x40 rough guess
     def set_text_colour(self, new_colour_rgb):
         self.text_colour = new_colour_rgb
 
-    def set_dummy_values(self, dummy_value):
+    def set_dummy_values(self, dummy_value, user_input=False):
         # if want use help and stuff (options)
-        dummy_value = int(dummy_value) - 1
+        # dummy_value = int(dummy_value) - 1
+        if user_input:
+            self.changes += 1
         self.dummy_values = list(self.dummy_values)  # WEW LAD THIS REMOVES POINTERS
-        self.dummy_values[dummy_value] = not self.dummy_values[dummy_value]
-        self.value = None
+        if dummy_value in self.dummy_values:
+            self.dummy_values.remove(dummy_value)
+        else:
+            if len(self.dummy_values) != 0:
+                insertion = len(self.dummy_values)
+                for index, value in enumerate(self.dummy_values):
+                    if dummy_value < value:
+                        insertion = index
+                        break
+                print(insertion)
+                self.dummy_values = self.dummy_values[:insertion] + [dummy_value] + self.dummy_values[insertion:]
+
+            else:
+                self.dummy_values = [dummy_value]
+        if len(self.dummy_values) == 1 and not user_input:
+            self.set_value(self.dummy_values[0])
+        else:
+            self.value = ""
+            self.set_text_for_dummy_values()
+
+    def set_dummy_values_to(self, values):
+        if len(values) == 1:
+            self.value = values[0]
+            self.dummy_values = []
+        else:
+            self.dummy_values = values
+            self.value = ""
+
+        self.set_text_for_dummy_values()
+
+    def set_text_for_dummy_values(self):
         text = ""
         for x_index, x_value in enumerate(self.dummy_values):
             if x_value:
-                text += str(x_index+1)
+                text += str(x_value)
 
             else:
                 text += " "
@@ -428,19 +500,23 @@ class SudokuTile(Button):  # 40x40 rough guess
                 text += "\n"
         self.change_text(text)
 
-    def set_dummy_values_to(self, values):
-        self.dummy_values = values
-        self.value = None
+    def edit(self, left_click, event):
 
-    def edit(self, left_click, number):
-        # TODO highlight this and other tiles in like a cross
-        if self.editable:
-            if left_click:
-                self.set_value(number)
-            else:
-                self.set_dummy_values(number)
-            self.draw()
-            self.changes += 1
+        if event.key in range(49, 58):
+            number = event.unicode
+            if self.editable:
+                if left_click:
+                    self.set_value(number, True)
+                else:
+                    self.set_dummy_values(number, True)
+                self.draw()
+                self.changes += 1
+
+        elif event.key == 8 or event.key == 127 or event.key == 266:
+            if self.value:
+                self.value = ""
+            elif self.dummy_values:
+                self.dummy_values = self.dummy_values[:-1]
 # </editor-fold>
 
 
@@ -467,6 +543,8 @@ def swap_screen(menu):
 def display_buttons(menu):
     global buttons, Screen
     Screen.fill((190, 190, 190))  # could just cover buttons
+    if menu == "High_Score_Input":
+        initialise_high_scores(buttons["Game"]["Grid"])
     for button in buttons[menu].values():
         button.draw()
         try:
@@ -488,7 +566,7 @@ def change_staring_help():
 
 
 def change_difficulty():
-    global difficulty, buttons  
+    global difficulty, buttons
     options = ["Easy", "Medium", "Hard", "Fiendish"]
     difficulty = options[(options.index(difficulty)+1) % len(options)]
     buttons["Options"]["difficulty"].change_text("difficulty ("+str(difficulty)+")")
@@ -506,7 +584,7 @@ def give_hint(sudokugrid):
     # chain rule
     # only possible value for tile
     # only unique number in grid or row/column
-    print("give_hint function incomplete")
+    print("give_hintfunction incomplete")
     pass
 # </editor-fold>
 
@@ -519,11 +597,9 @@ def input_handle():
         event = pygame.event.poll()
         if event.type == pygame.MOUSEBUTTONUP:
             handle_click(event.button == 1, pygame.mouse.get_pos())
-        elif event.type == pygame.KEYDOWN and event.key in range(49, 58):
+        elif event.type == pygame.KEYDOWN:# TODO add backspace i.e. remove most recent value
             try:
-                last_clicked_on[0].edit(last_clicked_on[1], event.unicode)
-
-                # TODO check if user completed
+                last_clicked_on[0].edit(last_clicked_on[1], event)
             except AttributeError:
                 pass
 
@@ -556,47 +632,45 @@ def shuffle_grid(grid):
     random.shuffle(shuffle_type)
     for shuffle_method in shuffle_type:
         try:
-
             grid = shuffle_method(grid)
         except TypeError:
             grid = shuffle_method(grid, random.choice([0, 90, 180]))
-
     return grid
-    
-    
-def rotation(array, rotation_angle):  # uses matrix rotation
+
+
+def rotation(array, rotation_angle, length=9):  # uses matrix rotation
 
     if rotation_angle == 90:
         def rotate_to(x, y):
-            new_x = 8-y
+            new_x = length-1-y
             new_y = x
             return new_y, new_x
-        
-        new_array = turn(array, rotate_to)
+
+        new_array = turn(array, rotate_to, length)
     elif rotation_angle == 180:
         def rotate_to(x, y):
-            new_x = 8-x
-            new_y = 8-y
+            new_x = length-1-x
+            new_y = length-1-y
             return new_y, new_x
-        new_array = turn(array, rotate_to)
+        new_array = turn(array, rotate_to, length)
     elif rotation_angle == 270:
         def rotate_to(x, y):
             new_x = y
-            new_y = 8-x
+            new_y = length-1-x
             return new_y, new_x
-        new_array = turn(array, rotate_to)
-    try: # TODO re-write this
+        new_array = turn(array, rotate_to, length)
+    try:  # TODO re-write this
         return new_array
     except NameError:
         return array
 
 
-def turn(array, rotate_to):
-    new_array = [None for _ in itertools.repeat(81)]
+def turn(array, rotate_to, length):
+    new_array = [None for _ in range(length**2)]
     for index, index_value in enumerate(array):
-        y, x = divmod(index, 9)
+        y, x = divmod(index, length)
         new_y, new_x = (rotate_to(x, y))
-        new_index = new_y*9+new_x
+        new_index = new_y*length+new_x
         new_array[new_index] = index_value
     return new_array
 
@@ -604,9 +678,9 @@ def turn(array, rotate_to):
 def set_random_numbers(array):
     values = [x for x in range(1, 10)]
     random.shuffle(values)
-    set_values = [x for x in range(1, 10)]  # store as alphabet characters
-    swap = {set_values[x]: values[x] for x in range(9)}
-    new_array = [swap[x] for x in array]
+    # set_values = [x for x in range(1, 10)]  # store as alphabet characters
+    swap = {x+1: values[x] for x in range(9)}
+    new_array = [swap[int(x)] for x in array]
     return new_array
 
 
@@ -632,21 +706,26 @@ def basic_dummy_values(grid):
         for number in range(1, 9):
             if ((number not in grid.get_sub_grid(index)) and (number not in grid.get_row(index)) and
                     (number not in grid.get_coloumn(index))):
-
                 tile.set_dummy_values(number)
 
 
-def get_numbers_appearance_by_index(group):
+def get_numbers_appearance_by_index(group):  # WRONG
     return [[row for row in range(len(group)) if number in group[row]] for number in range(1, 10)]
 
 
 def trivial_dummy_values(grid):
-    for index, tile in enumerate(grid):
-        tile_values = [x for x in range(1, 10)]
-        row, column, sub_grid = grid.get_row(index), grid.get_column(index), grid.get_sub_grid(index)
-        iter_through = list(set(row).union(set(column), set(sub_grid)))
-        tile_values = list(set(tile_values).difference(iter_through))
-        tile.set_dummy_values(tile_values)
+    for index, tile in enumerate(grid.get_grid()):
+        if not tile.get_value():
+            row, column, sub_grid = grid.get_row(index), grid.get_column(index), grid.get_sub_grid(index)
+            tile_values_to_remove = set((group_tile.get_value() for group_tile in row+column+sub_grid))
+            tile_old_dummies = tile.get_dummy_values()
+            tile_values = list(set(tile_old_dummies).difference(tile_values_to_remove))
+            tile_values.sort()
+            if tile_old_dummies != tile_values:
+                tile.set_dummy_values_to(tile_values)
+                return True
+
+    return False
 
 
 # <editor-fold desc="Tuple solving">
@@ -655,234 +734,296 @@ def get_dummy_values_from_tiles(tiles):
 
 
 def solve_through_tuples(group):
-    numbers_appearance_by_index = get_numbers_appearance_by_index(group)
     dummy_values_by_tile = get_dummy_values_from_tiles(group)
+    numbers_appearance_by_index = get_numbers_appearance_by_index(dummy_values_by_tile)
     solve_functions = [singles, doubles, triples]
-    for function in solve_functions:
-        index, value = function(numbers_appearance_by_index)  # TODO double check all of this
-        if index:
-            remove_naked_tuples(group, value, index)
+    function_index = 0
+    while True:
+        function = solve_functions[function_index]
+        change = False
+        indexes, values = function(dummy_values_by_tile)
+        if indexes:
+            change = remove_naked_tuples(group, indexes, values, function)
         else:
-            value, index = function(dummy_values_by_tile)
-            if index:
-                remove_hidden_tuples(group, value, index)
+            if indexes:
+                change = remove_hidden_tuples(group, indexes, values)
+        if not change:
+            if function_index == len(solve_functions)-1:
+                return False
+            function_index += 1
+
+        else:
+            return True
 
 
-def remove_naked_tuples(group, value, index):
-    old_group = list(group)
+def remove_naked_tuples(group, indexes, values, function):
+    old_group = [tile.get_dummy_values() for tile in group]
+    if function == doubles:
+        for index, tile in enumerate(group):
+            if index not in indexes:
+                for value in values:
+                    tile_dummies = tile.get_dummy_values()
+                    if value in tile_dummies:
+                        tile.set_dummy_values(value)
     for tile in group:
         tile_dummy_values = tile.get_dummy_values()
-        if value in tile_dummy_values and tile != group[index]:
-            if type(value) == int:
-                tile_dummy_values.set_dummy_values(value)
+        if values in tile_dummy_values and tile != group[indexes]:
+            if type(values) == int:
+                tile.set_dummy_values(values)
             else:
-                tile_dummy_values.set_dummy_values([values for values in value if values in tile_dummy_values])
+                for values in values:
+                    if values in tile_dummy_values:
+                        tile.set_dummy_values(values)
 
-    if old_group != group:
-        return False  # If no change set flag
+    if any(old_group[tile_index] != group[tile_index].get_dummy_values() for tile_index in range(len(group))):
+        # TODO could be more efficient
+        return True
     else:
-        return True  # If no change set flag
+        return False
 
 
-def remove_hidden_tuples(group, value, index):
-    old_group = list(group)
-    if type(index) == int:
-        group[index].set_value_to(value)
+def remove_hidden_tuples(group, indexes, values):  # 10 values that index can be 0 through 9
+    old_group = [tile.get_dummy_values() for tile in group]
+    if type(indexes) == int:
+        group[indexes].set_value(values+1)
     else:
-        for count in range(len(index)):
-            group[index[count]].set_value_to(index[count])
-    if old_group != group:
-        return False  # If no change set flag
+        for index in indexes:
+            group[index].set_dummy_values_to([value+1 for value in values if value+1 in group[index].get_dummy_values()])
+
+    if any(old_group[tile_index] != group[tile_index].get_dummy_values() for tile_index in range(len(group))):
+        # TODO could be more efficient
+        return True
     else:
-        return True # If no change set flag
+        return False
 
 
 def singles(iter_through):
-    overwrite, value = None, None
+    overwrite, value = "", ""
     lengths = [len(appearances) for appearances in iter_through]
     if 1 in lengths:
         overwrite = lengths.index(1)
-        value = lengths.index(1)
-        return overwrite, value
+        value = iter_through[overwrite][0]
+
+    return overwrite, value
 
 
 def doubles(iter_through):
-    overwrite, value = None, None
     for index, appearances in enumerate(iter_through):
-        index_of_appearances = [index2 for index2, value in iter_through if index2 == appearances]
+        index_of_appearances = [index2 for index2, value in enumerate(iter_through) if value == appearances]
         if len(index_of_appearances) == 2 and len(appearances) == 2:
             overwrite = appearances
-            values = index_of_appearances
-            return [overwrite, values]
+            values = [index_of_appearance for index_of_appearance in index_of_appearances]
+            return [values, overwrite]
+
+    return "", ""
 
 
 def triples(iter_through):
     # Make it return an argument or pass it through a function where I change the values
     # as the test is identical just the list to test is different
-    overwrite, value = None, None
+    indexes, value = "", ""
     for index, appearances in enumerate(iter_through):
         if len(appearances) == 3:  # Could do all iteration after the current index as it already checked behind it
             appearances_of_appearances = iter_through.count(appearances)
             # 3 3 3
             if appearances_of_appearances == 3:
-                overwrite = [index] + \
+                indexes = [index] + \
                           [index2 for index2, value in enumerate(iter_through[index:]) if value == appearances]
-                values = appearances
-                return overwrite, values
+                return indexes, appearances
 
             else:
-                subsets = [set(tile).issubset(set(appearances)) for tile in iter_through]
+                subsets = [set(tile).issubset(set(appearances)) if tile and tile != appearances else False
+                           for tile in iter_through]
             # 3 3 2
             if appearances_of_appearances == 2 and subsets.count(True)-1 == 1:
-                index_of_appearances = [index] + [iter_through[index:].index(appearances)]
+                index_of_appearances = [index] + [iter_through[index+1:].index(appearances)]
                 subset_index = subsets.index(True)
-                overwrite = [index_of_appearances + [subset_index] for appearance in appearances
-                             if appearance in iter_through[subset_index]]
-                values = appearances
-                return overwrite, values
+                indexes = [index_of_appearances + [subset_index] for appearance in appearances
+                           if appearance in iter_through[subset_index]]
+                return indexes, appearances
 
             # 3 2 2
             if appearances_of_appearances == 1 and subsets.count(True)-1 == 2:
                 subset_indexes = [index2 for index2, value in enumerate(subsets) if value]
-                overwrite = [[index] + [subset_index for subset_index in subset_indexes
+                indexes = [[index] + [subset_index for subset_index in subset_indexes
                                         if appearance in iter_through[subset_index]]
-                             for appearance in appearances]
-                values = appearances
-                return overwrite, values
+                           for appearance in appearances]
+                return indexes, appearances
 
         # 2 2 2
-        if len(appearances) == 2: #TODO TEST this
-            other_indexes = [index_2d_list_condition(iter_through, appearance, length_list)
+        if len(appearances) == 2 and appearances not in iter_through[index + 1:]:
+            other_indexes = [other_index_2d_list_condition(iter_through, appearance, index, length_list)
                              for appearance in appearances]
-            other_values = [iter_through[(other_indexes[index][0])][1-other_indexes[index][1]]
-                            for index in range(0, 2)]  # TODO doesn't catch all
-            # Doesn't catch when there is another tile that would be taken down to hidden single through this i.e.
-            # one of the values removed only had two copies on at the time
+            if other_indexes[0] and other_indexes[1]:
+                other_values = [iter_through[(other_indexes[other_index][0])][1-other_indexes[other_index][1]]
+                            for other_index in range(0, 2)]  # TODO doesn't catch all
+                # Doesn't catch when there is another tile that would be taken down to hidden single through this i.e.
+                # one of the values removed only had two copies on at the time
 
-            if len(other_indexes) == 2 and other_values[0] == other_values[1]:
-                overwrite = [index + other_index for other_index in other_indexes for appearance in appearances
-                             if appearance in iter_through[other_index]] + other_indexes
-                values = appearances + [other_values]
-                return overwrite, values
+                if len(other_indexes) == 2 and other_values[0] == other_values[1]:
+                    indexes = [other_index[0] for other_index in other_indexes] + [index]
+                    values = appearances + [other_values[0]]
+                    return indexes, values
+    return "", ""
 
 
-def index_2d_list_condition(list_2d, key, condition):
-    for index, list_1d in enumerate(list_2d):
+def other_index_2d_list_condition(list_2d, key, start_index, condition):
+    for index, list_1d in enumerate(list_2d[start_index+1:]):
         if key in list_1d and condition(list_1d):
-            return [index, list_1d.index(key)]
+            return [start_index + index + 1, list_1d.index(key)]
 
 
 def length_list(target_list, target=2):
     return len(target_list) == target
 
 
-def check_tuples_duplicates(grid):
-    rows = [[tile for tile in grid.get_row(row)] for row in range(9)]
-    columns = [[tile for tile in grid.get_coloumn(column)] for column in range(9)]
-    grids_3_x_3 = [[tile for tile in grid.get_sub_grid(grid_3x3)] for grid_3x3 in range(9)]
-    criteria = [rows, columns, grids_3_x_3]
-    for criterion in criteria:
-        solve_through_tuples(criterion)
+def get_sub_grid_from_list(grid, index):  # TODO DELETE THIS
+    column_number, row_number = divmod(index, 3)
+    column_number *= 3
+    row_number *= 3
+    sub_grid = [grid
+                [row_number + (column_number + row_increment) * 9:
+                 row_number + (column_number + row_increment) * 9 + 3]
+                for row_increment in range(3)]
+    return sum(sub_grid, [])
+
+
+def check_tuples_duplicates(grid):  # TODO sort out commenting
+    rows = [list(grid.get_row(row, True)) for row in range(9)]
+    columns = [list(grid.get_column(column, True)) for column in range(9)]
+    sub_grids = [list(grid.get_sub_grid(grid_3x3, True)) for grid_3x3 in range(9)]
+    criteria = rows + columns + sub_grids
+    for index in range(len(criteria)):
+        criterion = criteria[index]
+        change = solve_through_tuples(criterion)
+        if change:
+            return True
+    return False
 # </editor-fold>
 
 
 # <editor-fold desc="Intersection Removal">
 
 
-def intersection_removal_call(grid):
-    rows, columns, subgrids, rotated_subgrids = [], [], []
+def intersection_removal_call(grid):  # TODO add changes
+    rows, columns, subgrids, rotated_subgrids = [], [], [], []
     for index in range(9):
         rows.append(grid.get_row(index, True))
         columns.append(grid.get_column(index, True))
-        subgrid = grid.get_subgrids(index, True)
+        subgrid = grid.get_sub_grid(index, True)
         subgrids.append(subgrid)
-        rotated_subgrids.append(rotation(subgrid, 90))
-
+        rotated_subgrids.append(rotation(subgrid, 90, 3))
     rows_columns = rows + columns
-    subgrids = subgrids + rotated_subgrids
-    Test_groups = [rows_columns] + [subgrids]
+    subgrids += rotated_subgrids
+    test_groups = [rows_columns] + [subgrids]
     for x in range(18):
         for test_group_index in range(2):
-            test_group = get_numbers_appearance_by_index(Test_groups[test_group_index][x].get_dummy_values())
-            tile_index, number = None, None
-            tile_index, number = intersection_removal(test_group)
-            if number:
-                if test_group_index == 0:
-                    if x in range(9):
-                        grid_index = tile_index//3 + (x//3)*3
+            test_group = get_numbers_appearance_by_index([test_tile.get_dummy_values()
+                                                          for test_tile in test_groups[test_group_index][x]])
+            tile_index, number = "", ""
+            if any(test_group):
+                tile_index, number = intersection_removal(test_group)
+                if number:
+                    if test_group_index == 0:
+                        if x in range(9):
+                            grid_index = tile_index//3 + (x//3)*3
 
-                    else:
-                        grid_index = x//3 + (tile_index//3)*3
+                        else:
+                            grid_index = x//3 + (tile_index//3)*3
 
-                    group = grid.get_sub_grid(grid_index, True)
-                    group_to_remove_values = group[:x % 3] + group[(x + 1) % 3:]
-
-                else:
-                    if x in range(9):
-                        row_index = tile_index//3 + (x//3)*3
-                        group = grid.get_row(row_index, True)
+                        group = grid.get_sub_grid(grid_index, True)
                         group_to_remove_values = group[:x % 3] + group[(x + 1) % 3:]
 
                     else:
-                        column_index_in_3_block = tile_index//3 + (x%3)*3
-                        group = grid.get_column(column_index_in_3_block, True)
-                        group_to_remove_values = group[:x // 3] + group[(x + 1) // 3:]
+                        if x in range(9):
+                            row_index = tile_index//3 + (x//3)*3
+                            group = grid.get_row(row_index, True)
+                            group_to_remove_values = group[:x % 3] + group[(x + 1) % 3:]
 
-                for tile in group_to_remove_values:
-                    if number in tile.get_dummy_values():
-                        tile.set_dummy_values(number)
+                        else:
+                            column_index_in_3_block = tile_index//3 + (x%3)*3
+                            group = grid.get_column(column_index_in_3_block, True)
+                            group_to_remove_values = group[:x // 3] + group[(x + 1) // 3:]
+
+                    old_dummies = [tile.get_dummy_values() for tile in grid.get_grid()]
+                    for tile in group_to_remove_values:
+                        if number in tile.get_dummy_values():
+                            tile.set_dummy_values(number)
+
+                    if [tile.get_dummy_values() for tile in grid.get_grid()] == old_dummies:
+                        return True
+    return False
 
 
 def intersection_removal(appearance_grid):
     for index, appearances in enumerate(appearance_grid):
         if len(appearances) in range(2, 4):
             column_appearances = [row_sub_grid_value % 3 for row_sub_grid_value in appearances]
-        if all(column_appearances == column_appearances[0]):
-            return min(appearances), index
-
+            if column_appearances == column_appearances[0]:# TODO IDK
+                return min(appearances), index
+    return "", ""
+# </editor-fold>
 # </editor-fold>
 
 
 # <editor-fold desc="Generate Problem">
-def generate_problem(grid_class):
+def generate_problem(grid_class): # TODO wrong index?
     # difficulty is a global variable specifying which functions I can use
-    tile_indexes = [x for x in range(81)]
-    random.shuffle(tile_indexes)
-    for index in tile_indexes:
-        value = grid_class.get_all_values()
-        grid_class.set_value(index, None)
-        if not try_to_solve(grid_class):
-            grid_class.set_value(index, value)
+    list_of_tiles = list(grid_class.get_grid())
+    random.shuffle(list_of_tiles)
+    old_grid = grid_class.get_all_values()
+    blank_tiles = []
+    for tile in list_of_tiles:
+        value = tile.get_value()
+        if list_of_tiles.index(tile) == 80: #TODO delete this
+            pass
+        tile.set_value("")
+        if try_to_solve(grid_class):
+            blank_tiles.append(tile)
 
-    for tile in grid_class.get_grid():
-        if tile.get_value:
+        else:
+            tile.set_value(value)
+
+        for blank_tile in blank_tiles:
+            blank_tile.set_value("")
+
+    for tile in list_of_tiles:
+        if tile not in blank_tiles:
             tile.change_editable()
 
 
 def get_state(grid):
-    return [[grid.get_dummy_value(x) for x in range(81)], [grid.get_value(x) for x in range(81)]]
+    tile_list = grid.get_grid()
+    return [[tile_list[x].get_dummy_values() for x in range(81)], [tile_list[x].get_value() for x in range(81)]]
 
 
-def try_to_solve(grid):
-    solving_techniques = [trivial_dummy_values, solve_through_tuples, intersection_removal_call]
-    # Will be specified by difficulty
-    completed = False
-    while not completed:
-        [old_dummies, old_values] = get_state(grid)
-        for solving_technique in solving_techniques:
-            grid = solving_technique(grid)
-            if [old_dummies, old_values] != get_state(grid):
-                break
-                
-            if all(grid.get_value(tile_index) for tile_index in range(81)):
-                return completed
-            
-            elif solving_technique == solving_techniques[-1]:
+def check_identical_grids(completed_grid, un_completed_grid):
+    for index in range(len(completed_grid)):
+        if un_completed_grid[index] != "":
+            if completed_grid[index] != un_completed_grid[index]:
                 return False
-        solving_techniques.pop(0)
+    return True
 
-# </editor-fold>
 
+def try_to_solve(grid):  # TODO remove old_grid argument
+    solving_techniques = [trivial_dummy_values, check_tuples_duplicates, intersection_removal_call]
+    # Will be specified by difficulty
+    for tile in grid.get_grid():
+        if not tile.get_value():
+            tile.set_dummy_values_to([x for x in range(1, 10)])
+    solving_techniques_index = 0
+    while True:
+        solving_technique = solving_techniques[solving_techniques_index]
+        change = solving_technique(grid)
+
+        if not change:
+            if solving_techniques_index == len(solving_techniques) - 1:
+                return False
+            solving_techniques_index += 1
+        else:
+            if all(grid.get_all_values()):
+                return True
+            solving_techniques_index = 0
 # </editor-fold>
 
 # TODO work on making sure grid is correct ie the user has completed the game
@@ -891,6 +1032,7 @@ def try_to_solve(grid):
 # <editor-fold desc="Interaction with SQL server">
 def establish_connection():
     global CONNECTION, HOSTS
+    # raise EOFError
     while True:
         try:
             db = mysql.connector.Connect(**CONNECTION)
@@ -903,20 +1045,19 @@ def establish_connection():
                 print("Server down please try again")
                 exit()
         break
-    print("Connection established")
     db.start_transaction(isolation_level='READ COMMITTED')
     cur = db.cursor(buffered=True)
     return [db, cur]
 
 
-def get_completed_grid_values(connection):  # pull random seed (find a server storage thing)
+def get_completed_grid_values(connection=establish_connection):  # pull random seed (find a server storage thing)
     # noinspection PyGlobalUndefined
-    global table
-    db = connection[0]
-    cur = connection[1]
-    cur.execute("SELECT grid FROM " + table + " ORDER BY RAND() LIMIT 1")
+    global TABLE
+    [db, cur] = connection()
+    cur.execute("SELECT grid FROM " + TABLE + " ORDER BY RAND() LIMIT 1")
     completed_grid_values = cur.fetchall()
     db.close()
+    completed_grid_values = list(completed_grid_values[0][0])
     return completed_grid_values
 
 
@@ -938,41 +1079,38 @@ def upload_high_score(cur, grid, column_number, field_values):
         column = "highTime"
 
     cur.execute(
-        "UPDATE " + column + " FROM " + table + " VALUES" + str(field_values) + "WHERE grid = " + grid)
+        "UPDATE " + column + " FROM " + TABLE + " VALUES" + str(field_values) + "WHERE grid = " + grid)
 
 
-def check_and_upload_user_high_scores(connection, sudoku_grid):
-    global table
-    db = connection[0]
-    cur = connection[1]
-    grid = "".join(sudoku_grid.get_all_values)
-    high_scores, high_scores_names = get_high_scores(db, cur, table, grid)
-    player_changes, player_time = sudoku_grid.get_high_score()
-    user_high_scores = [player_changes, player_time]
-    if any(user_high_scores[high_score_index] < high_scores[high_score_index][-1] for high_score_index in range(2)):
-        # TODO get user name somehow
-        if all(user_high_scores[high_score_index] < high_scores[high_score_index][-1] for high_score_index in range(2)):
-            for index, high_score_table in enumerate(high_scores):
-                stuff_to_upload = make_new_top_5(player_changes, high_score_table, user_name, high_scores_names[index])
-                upload_high_score(cur, grid, index, stuff_to_upload)
-
-        else:
-            for index, high_score_table in enumerate(high_scores):
-                if user_high_scores[index] < high_score_table[-1]:
-                    stuff_to_upload = make_new_top_5(player_changes, high_score_table, user_name,
-                                                     high_scores_names[index])
-                    upload_high_score(cur, grid, index, stuff_to_upload)
-    else:
-        # display unfortunately you didn't reach a top score
-        pass
-
-    # display top scores
+def upload_new_high_score(name, new_high_scores, connection=establish_connection):
+    [db, cur] = connection()
+    # TODO check new_high_scores is correct
+    print(new_high_scores)
+    [user_high_scores, high_scores, high_scores_names, grid] = new_high_scores
+    # TODO replace NONE in high_scores_names with the name argument
+    high_scores_to_upload = new_high_scores
+    for column_number, field_values in enumerate(high_scores_to_upload):
+        upload_high_score(cur, grid, column_number, field_values)
     db.commit()
-
     db.close()
 
 
-def get_high_scores(db, cur, table, grid):  # TODO allow nicknames
+def check_user_high_score(sudoku_grid, connection=establish_connection):
+    global TABLE
+    [db, cur] = connection()
+    grid = "".join(sudoku_grid.get_all_values)
+    high_scores, high_scores_names = get_high_scores(cur, TABLE, grid)
+    player_changes, player_time = sudoku_grid.get_high_score()
+    user_high_scores = [player_changes, player_time]
+    new_high_scores = [make_new_top_5(user_high_scores[high_score_index], high_scores[high_score_index], "None", high_scores_names[high_score_index])
+                       for high_score_index in range(2) if user_high_scores[high_score_index] < high_scores[high_score_index][-1]]
+    # TODO check this
+    db.commit()
+    db.close()
+    return new_high_scores
+
+
+def get_high_scores(cur, table, grid):  # TODO allow nicknames
     cur.execute("SELECT highTime FROM " + table + "WHERE grid = " + grid)
     high_time = cur.fetchall()
     cur.execute("SELECT highChanges FROM " + table + "WHERE grid = " + grid)
@@ -983,6 +1121,26 @@ def get_high_scores(db, cur, table, grid):  # TODO allow nicknames
     high_score_names = [[value for value in high_score[high_score.index("|"):]]
                         for high_score in high_scores]
     return high_scores, high_score_names
+
+
+def initialise_high_scores(grid):
+    global buttons
+    new_high_scores = check_user_high_score(grid)
+    high_scores_in = ["None" in new_high_scores[index] for index in range(2)]
+    if any(high_scores_in):
+        buttons["High_Score_Input"]["Get Name"].set_args(new_high_scores) # get name
+
+        if all(high_scores_in):  # TODO change text displayed
+            buttons["High_Score_Input"]["High_Score_Message"].change_text("Well done you  made the leader board for "
+                                                                          "both speed, and mistakes")
+        elif high_scores_in[0]:
+            buttons["High_Score_Input"]["High_Score_Message"].change_text("Well done you  made the leader board "
+                                                                          "for mistakes")
+        else:
+            buttons["High_Score_Input"]["High_Score_Message"].change_text("Well done you  made the leader "
+                                                                          "board for speed")
+    else:
+        swap_screen("High_score_Tables") # pass in new_high_scores somehow
 
 # </editor-fold>
 
@@ -1007,16 +1165,19 @@ def save(grid):
 
 
 def load():
-    with open("Save", "r+") as f:
-        lines = f.readlines()
-        if not lines[0]:
-            return False
-        else:
-            tiles_info = lines[0].spilt(',')
-            tiles_info = [tile_info.spilt('|') for tile_info in tiles_info]
-            high_score = lines[1].spilt('|')
-        f.truncate()
-        return tiles_info, high_score
+    try:
+        with open("Save", "r+") as f:
+            lines = f.readlines()
+            if not lines[0]:
+                return False
+            else:
+                tiles_info = lines[0].spilt(',')
+                tiles_info = [tile_info.spilt('|') for tile_info in tiles_info]
+                high_score = lines[1].spilt('|')
+            f.truncate()
+            return tiles_info, high_score
+    except FileNotFoundError:
+        return False, False
 
 if __name__ == "__main__":
     init_buttons()

@@ -1,0 +1,177 @@
+%
+% Sudoku Analysis Project
+% Edward Boulderstone
+% Computer Science A Level Project
+%
+%
+\documentclass[fleqn]{article}
+\usepackage{times}
+\usepackage{xcolor}
+\usepackage{comment}
+\usepackage{graphics}
+\usepackage[dvips]{graphicx}
+\usepackage[margin=10pt,font=small,labelfont=bf]{caption}
+\usepackage[margin=10pt,font=small,labelfont=bf]{subcaption}
+\usepackage[percent]{overpic}
+\usepackage{cite}
+\usepackage{titlesec}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[margin=25mm]{geometry}
+\usepackage{enumerate}
+
+
+
+\usepackage[utf8]{inputenc}
+
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{8} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{8}  % for normal
+
+% Custom colors
+\usepackage{color}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+\usepackage{listings}
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+language=Python,
+basicstyle=\ttm,
+otherkeywords={self},             % Add keywords here
+keywordstyle=\ttb\color{deepblue},
+emph={generate_key,__init__},          % Custom highlighting
+emphstyle=\ttb\color{deepred},    % Custom highlighting style
+stringstyle=\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false            % 
+}}
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+\usepackage{epstopdf}
+\usepackage{tikz}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{shapes,arrows}
+\usepackage{hyperref}
+\usetikzlibrary{positioning}
+  
+\titleformat*{\section}{\normalfont\fontsize{14}{16}\normalfont\bf}
+\titleformat*{\subsection}{\normalfont\fontsize{12}{14}\normalfont\bf}
+\titleformat*{\subsubsection}{\normalfont\fontsize{12}{14}\normalfont}
+\titleformat*{\paragraph}{\normalfont\fontsize{11}{13}\normalfont}
+
+\let\oldtabular\tabular
+\renewcommand{\tabular}{\footnotesize\oldtabular}
+\newcommand{\TextUnderscore}{\rule{.4em}{.4pt}}
+
+\begin{document}
+
+
+\section{Technical Solution}
+
+\subsection{Server}
+
+\subsubsection{Place cell}
+ 
+This code generates the completed Sudoku grid recursively by first shuffling a list of numbers 1 to 9. Then it iterates through the list, and it will place the first valid number it reaches. If there is no legal place-able number for that tile, it will backtrack and continue from where it left off on a previous tile
+
+
+
+
+
+
+
+
+\begin{python}
+def place_cell(sudoku_grid, c=0):
+    column_number, row_number = divmod(c, 9)  # returns column,row
+    numbers = [count for count in range(1, 10)]
+    random.shuffle(numbers)
+    for Number in numbers:
+        if ((Number not in sudoku_grid[round_(c, 9):round_(c, 9) + 9]) and
+                (Number not in sudoku_grid[row_number::9]) and
+                all(Number not in sudoku_grid[round_(row_number, 3) + ((round_(column_number, 3) + count) * 9):
+                    round_(row_number, 3) + 3 + ((round_(column_number, 3) + count) * 9)]
+                    for count in range(0, 3))):  # checks grid
+            sudoku_grid[c] = Number
+            if c + 1 >= 81 or place_cell(sudoku_grid, c + 1):
+                return sudoku_grid
+    else:
+        sudoku_grid[c] = None
+        return None
+\end{python}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{python}
+def generate_key(grid):
+    full_list = []
+    check_list = []
+    for Index_Tile in range(0, 9):
+        for Row in range(0, 3):
+            for Tile_Row in range(3):
+                check_list[Row * 9 + Tile_Row * 3:Row * 9 + (Tile_Row + 1) * 3] = \
+                    grid[(((Index_Tile // 3) + Row) * 9 + Tile_Row * 3 + Index_Tile % 3) * 3:
+                         (((Index_Tile // 3) + Row) * 9 + Tile_Row * 3 + 1 + Index_Tile % 3) * 3]
+        for Column in range(1, 3):
+            for Tile_Row in range(3):
+                check_list[27 + (Column - 1) * 9 + Tile_Row * 3:27 + (Column - 1) * 9 + (Tile_Row + 1) * 3] = \
+                    grid[((Index_Tile // 3) * 9 + Tile_Row * 3 + (Index_Tile + Column) % 3) * 3:
+                         ((Index_Tile // 3) * 9 + Tile_Row * 3 + 1 + (Index_Tile + Column) % 3) * 3]
+        check_lists = [check_list,
+                       [check_list[9:18] + check_list[:9] + check_list[18:]][0],
+                       [check_list[18:27] + check_list[:18] + check_list[27:]][0],
+                       [check_list[27:36] + check_list[:27] + check_list[36:]][0],
+                       [check_list[36:] + check_list[:36]][0]]
+        tile_indexed = []
+        for StartIndex in range(len(check_lists)):
+            index = [x for x in range(1, 10)]
+            for _ in itertools.repeat(None, 3):
+                change_dict = {index[x]: x_value for x, x_value in enumerate(check_lists[StartIndex][:9])}
+                tile_indexed.append([change_dict[int(x)] for x in check_lists[StartIndex][9:]])
+                index = rotation(index, 90, 2)
+        full_list.append(tile_indexed)
+    return full_list
+    }
+\end{python}
+
+
+
+\end{document}
