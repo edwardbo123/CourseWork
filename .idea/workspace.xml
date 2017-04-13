@@ -5,12 +5,56 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="96bdd016-89fa-4d8c-b51c-a7452412a009" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Code/Client/Pygame backspace key check.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Write up/Technical Soultion.docx" afterPath="$PROJECT_DIR$/Write up/Technical Soultion.docx" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Analysis1April17.docx" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Analysis6April17.docx" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Analysis7April17.docx" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Analysis9April17.aux" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Analysis9April17.log" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Analysis9April17.out" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Analysis9April17.pdf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Analysis9April17.synctex.gz(busy)" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Analysis9April17.tex" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Design12Mar17.docx" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Design1April17.docx" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Design21Mar17.docx" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Design23Mar17.docx" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Mark Scheme.docx" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/New Analysis.docx" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/New_Documented_Design.docx" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuAnalysis10April17.aux" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuAnalysis10April17.log" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuAnalysis10April17.out" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuAnalysis10April17.pdf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuAnalysis10April17.synctex.gz" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuAnalysis10April17.tex" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuAnalysis9April17.aux" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuAnalysis9April17.log" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuAnalysis9April17.out" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuAnalysis9April17.pdf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuAnalysis9April17.synctex.gz" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuAnalysis9April17.tex" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuDesign10April17.aux" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuDesign10April17.log" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuDesign10April17.out" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuDesign10April17.pdf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuDesign10April17.synctex.gz" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuDesign10April17.tex" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuDesign12April17.aux" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuDesign12April17.log" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuDesign12April17.out" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuDesign12April17.pdf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuDesign12April17.synctex.gz" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuDesign12April17.tex" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuDesign19April17.tex" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuTechnical13April17.aux.aux" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuTechnical13April17.aux.log" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuTechnical13April17.aux.out" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuTechnical13April17.aux.pdf" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuTechnical13April17.aux.synctex.gz" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/SudokuTechnical13April17.aux.tex" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Technical Soultion.docx" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Thumbs.db" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Code/Client/Python unified main loop.py" afterPath="$PROJECT_DIR$/Code/Client/Python unified main loop.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Code/Server/Server.py" afterPath="$PROJECT_DIR$/Code/Server/Server.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Code/Server/Testing for grids.py" afterPath="$PROJECT_DIR$/Code/Server/Testing for grids.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -652,7 +696,14 @@
       <option name="project" value="LOCAL" />
       <updated>1491491934042</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="Uploaded all parts of coursework">
+      <created>1492090359968</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1492090359968</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TodoView">
@@ -721,7 +772,8 @@
     <MESSAGE value="Started Technical Solution" />
     <MESSAGE value="Kept working on technical solution" />
     <MESSAGE value="Kept working on Tech Soul" />
-    <option name="LAST_COMMIT_MESSAGE" value="Kept working on Tech Soul" />
+    <MESSAGE value="Uploaded all parts of coursework" />
+    <option name="LAST_COMMIT_MESSAGE" value="Uploaded all parts of coursework" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
