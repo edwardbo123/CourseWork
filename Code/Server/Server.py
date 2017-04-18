@@ -20,7 +20,6 @@ CONNECTION = {
     'get_warnings': True,
 }
 # </editor-fold>
-global VERBOSE
 # <editor-fold desc="Initialise the class I use for Trees, used to represent the ID.">
 
 
@@ -57,7 +56,6 @@ def identical_trees(root1, root2):  # This will check if the two nodes have iden
 
 
 # <editor-fold desc="Code for interacting with the server">
-# TODO handle multiple HighScores > 5
 def generate_upload_grid(connection, table):
     # cur.execute("desc " + table)
     # print(cur.fetchall())
@@ -175,11 +173,6 @@ def turn(array, rotate_to, length):
     return rotated_array
 
 
-def display(array):
-    for x in range(9):
-        print(array[x * 9:(x + 1) * 9])
-
-
 def generate_key(grid):
     full_list = []
     check_list = []
@@ -211,18 +204,15 @@ def generate_key(grid):
     return full_list
 
 
-def get_children(array, verbose=False):
-    if verbose:
-        print(array)
-        print(all([isinstance(value, list) for value in array]))
+def get_children(array):
     if type(array[0]) == list:
-        return Node([get_children(child, verbose) for child in array])
+        return Node([get_children(child) for child in array])
     else:
         return array
 
 
-def generate_seed(grid, verbose=False):
-    return get_children(generate_key(grid), verbose)
+def generate_seed(grid):
+    return get_children(generate_key(grid))
 # </editor-fold>
 
 # <editor-fold desc="Runs the code.">
