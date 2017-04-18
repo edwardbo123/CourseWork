@@ -5,15 +5,341 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="96bdd016-89fa-4d8c-b51c-a7452412a009" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Most Recent/SudokuAnalysis10April17.pdf" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Write up/Most Recent/SudokuDesign12April17.pdf" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Write up/Old/Technical Soultion.docx" afterPath="$PROJECT_DIR$/Write up/Old/Technical Soultion.docx" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/CourseWork.iml" afterPath="$PROJECT_DIR$/.idea/CourseWork.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/Completed.pdf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/comic.ttf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/SDL.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/SDL_image.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/SDL_mixer.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/SDL_ttf.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/_camera.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/_freetype.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/base.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/bufferproxy.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/cdrom.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/color.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/constants.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/display.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/pygame_logo.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/pygame_powered.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/pygame_small.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/pygame_tiny.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/camera/average.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/camera/background.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/camera/green.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/camera/hsv.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/camera/mask.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/camera/rgb.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/camera/thresh.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/camera/thresholded.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/camera/yuv.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/chimp/chimpshot.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/intro/ball.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/intro/blade.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/intro/freedom.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/surfarray/allblack.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/surfarray/flipped.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/surfarray/imgarray.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/surfarray/redimg.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/surfarray/scaledown.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/surfarray/scaleup.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/surfarray/soften.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/surfarray/striped.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/surfarray/xfade.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/tom/basic.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/tom/event-flowchart.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/tom/formulae.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/tom/radians.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/draw.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/event.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/alien1.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/alien1.jpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/alien1.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/alien2.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/alien2.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/alien3.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/alien3.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/arraydemo.bmp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/asprite.bmp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/background.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/blue.mpg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/bomb.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/boom.wav" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/brick.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/car_door.wav" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/chimp.bmp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/city.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/danger.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/explosion1.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/fist.bmp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/house_lo.mp3" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/house_lo.ogg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/house_lo.wav" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/liquid.bmp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/midikeys.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/oldplayer.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/player1.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/punch.wav" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/sans.ttf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/secosmic_lo.wav" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/shot.gif" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/static.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/test.webp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/whiff.wav" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/yuv_1.pgm" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/macosx/aliens_app_example/English.lproj/MainMenu.nib/keyedobjects.nib" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/macosx/aliens_app_example/English.lproj/aliens.icns" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/fastevent.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/font.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/freesansbold.ttf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/gfxdraw.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/image.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/imageext.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/joystick.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/key.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/libogg.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/libvorbis.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/libvorbisfile.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/mask.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/math.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/mikmod.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/mixer.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/mixer_music.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/mouse.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/movie.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/newbuffer.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/overlay.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/pixelarray.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/pixelcopy.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/pygame.ico" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/pygame.old.ico" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/pygame_icon.bmp" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/pygame_icon.icns" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/pygame_icon.tiff" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/pypm.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/rect.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/rwobject.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/scrap.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/smpeg.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/surface.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/surflock.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/fixtures/fonts/A_PyGameMono-8.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/fixtures/fonts/PyGameMono.otf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/fixtures/fonts/test_fixed.otf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/fixtures/fonts/test_sans.ttf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/fixtures/fonts/u13079_PyGameMono-8.png" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/fixtures/xbm_cursors/white_sizing.xbm" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/fixtures/xbm_cursors/white_sizing_mask.xbm" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/time.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/transform.cp35-win32.pyd" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/zlib1.dll" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/Client.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/Server.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/LGPL" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/_camera_opencv_highgui.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/_camera_vidcapture.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/_dummybackend.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/_numpysndarray.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/_numpysurfarray.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/camera.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/colordict.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/compat.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/cursors.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/__main__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/logos.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/ref/docscomments.json" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/DisplayModes.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/ImportInit.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/MoveIt.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/camera/CameraIntro.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/chimp/ChimpLineByLine.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/chimp/chimp.py.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/intro/intro.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/surfarray/SurfarrayIntro.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/tom/MakeGames.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/tom/games2.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/tom/games3.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/tom/games4.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/tom/games5.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/docs/tut/tom/games6.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/__movie_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/aacircle.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/aliens.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/arraydemo.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/blend_fill.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/blit_blends.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/camera.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/chimp.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/cursors.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/mix.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/stderr.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/data/stdout.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/eventlist.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/fastevents.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/fonty.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/freetype_misc.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/glcube.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/headless_no_windows_needed.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/liquid.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/macosx/aliens_app_example/English.lproj/MainMenu.nib/JavaCompiling.plist" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/macosx/aliens_app_example/English.lproj/MainMenu.nib/_MainMenu_EOArchive_English.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/macosx/aliens_app_example/English.lproj/MainMenu.nib/classes.nib" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/macosx/aliens_app_example/English.lproj/MainMenu.nib/info.nib" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/macosx/aliens_app_example/README.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/macosx/aliens_app_example/aliens.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/macosx/aliens_app_example/setup.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/macosx/macfont.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/mask.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/midi.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/moveit.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/oldalien.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/overlay.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/pixelarray.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/prevent_display_stretching.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/scaletest.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/scrap_clipboard.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/scroll.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/sound.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/sound_array_demos.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/stars.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/testsprite.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/examples/vgrade.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/freetype.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/ftfont.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/gp2x/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/gp2x/constants.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/gp2x/locals.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/install.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/locals.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/macosx.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/midi.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/new  1.txt" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/pkgdata.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/pygame_icon.svg" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/readme.html" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/sndarray.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/sprite.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/surfarray.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/sysfont.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/__main__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/base_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/blit_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/bufferproxy_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/camera_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/cdrom_tags.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/cdrom_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/color_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/compat_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/cursors_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/display_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/draw_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/event_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/fastevent_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/fixtures/fonts/PyGameMono-18-100dpi.bdf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/fixtures/fonts/PyGameMono-18-75dpi.bdf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/fixtures/fonts/PyGameMono-8.bdf" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/font_tags.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/font_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/freetype_tags.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/freetype_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/ftfont_tags.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/ftfont_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/gfxdraw_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/image__save_gl_surface_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/image_tags.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/image_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/imageext_tags.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/imageext_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/joystick_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/key_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/mask_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/math_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/midi_tags.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/midi_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/mixer_music_tags.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/mixer_music_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/mixer_tags.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/mixer_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/mouse_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/overlay_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/pixelarray_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/pixelcopy_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/rect_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/all_ok/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/all_ok/fake_2_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/all_ok/fake_3_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/all_ok/fake_4_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/all_ok/fake_5_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/all_ok/fake_6_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/all_ok/no_assertions__ret_code_of_1__test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/all_ok/zero_tests_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/everything/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/everything/fake_2_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/everything/incomplete_todo_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/everything/magic_tag_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/everything/sleep_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/exclude/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/exclude/fake_2_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/exclude/invisible_tag_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/exclude/magic_tag_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/failures1/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/failures1/fake_2_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/failures1/fake_3_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/failures1/fake_4_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/incomplete/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/incomplete/fake_2_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/incomplete/fake_3_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/incomplete_todo/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/incomplete_todo/fake_2_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/incomplete_todo/fake_3_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/infinite_loop/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/infinite_loop/fake_1_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/infinite_loop/fake_2_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/print_stderr/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/print_stderr/fake_2_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/print_stderr/fake_3_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/print_stderr/fake_4_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/print_stdout/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/print_stdout/fake_2_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/print_stdout/fake_3_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/print_stdout/fake_4_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/run_tests__test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/timeout/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/timeout/fake_2_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/run_tests__tests/timeout/sleep_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/rwobject_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/scrap_tags.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/scrap_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/sndarray_tags.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/sndarray_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/sprite_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/surface_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/surfarray_tags.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/surfarray_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/surflock_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/sysfont_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/test_test_.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/test_utils/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/test_utils/arrinter.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/test_utils/async_sub.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/test_utils/buftools.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/test_utils/endian.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/test_utils/png.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/test_utils/run_tests.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/test_utils/test_runner.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/test_utils/unittest.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/test_utils/unittest_patch.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/threads_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/time_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/tests/transform_test.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/threads/Py25Queue.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/threads/__init__.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/CourseWork - Finished (Apart from Survey)/pygame/version.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Code/Client/Python unified main loop.py" afterPath="$PROJECT_DIR$/Code/Client/Python unified main loop.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Code/Server/.idea/Server.iml" afterPath="$PROJECT_DIR$/Code/Server/.idea/Server.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Code/Server/Server.py" afterPath="$PROJECT_DIR$/Code/Server/Server.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -282,7 +608,7 @@
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
   <component name="ProjectView">
-    <navigator proportions="" version="1">
+    <navigator currentView="ProjectPane" proportions="" version="1">
       <flattenPackages />
       <showMembers />
       <showModules />
@@ -295,10 +621,33 @@
       <manualOrder />
       <foldersAlwaysOnTop value="true" />
     </navigator>
-    <panes />
+    <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CourseWork" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CourseWork" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CourseWork" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+    </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PythonContentEntriesConfigurable" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="js.eslint.eslintPackage" value="" />
@@ -523,7 +872,7 @@
   </component>
   <component name="ShelveChangesManager" show_recycled="false" />
   <component name="SvnConfiguration">
-    <configuration />
+    <configuration>C:\Users\98eb12.BRGRA\AppData\Roaming\Subversion</configuration>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -670,7 +1019,13 @@
       <option name="project" value="LOCAL" />
       <updated>1492514657250</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Added close to finished project">
+      <created>1492514851573</created>
+      <option name="number" value="00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1492514851573</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TodoView">
@@ -684,28 +1039,28 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5079957" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5078125" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31505728" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32713756" sideWeight="0.50277776" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4073673" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32936078" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.43741587" sideWeight="0.49722221" order="2" side_tool="false" content_ui="tabs" x="1920" y="92" width="1440" height="860" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32827735" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39761648" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.43741587" sideWeight="0.49722221" order="2" side_tool="false" content_ui="tabs" x="1920" y="92" width="1440" height="860" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection Results" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32818848" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4024226" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995737" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.39761648" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
