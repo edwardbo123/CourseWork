@@ -20,7 +20,6 @@ DIMENSIONS = {
              "Button_left": 560}}
 index_help_type = "Medium"
 difficulty = "Medium"
-# TODO work on importing difficulty, index_help_type from files and how you work with them in save
 # </editor-fold>
 
 
@@ -52,7 +51,7 @@ def init_options():  # have option to pull from database
     # noinspection PyGlobalUndefined
     global help_type, index_help_type, difficulty
     # help_type = [easy, medium, difficult]  # functions
-    help_type = ["easy", "medium", "difficult"]  # TODO replace these with functions
+    help_type = ["easy", "medium", "difficult"]
     index_help_type = 1
     difficulty = "Medium"
 
@@ -81,7 +80,7 @@ def init_buttons():
                                                           colour=pygame.Color(190, 190, 190)),
                              "Get Name": TextBox(90, 7*39, 180, 78, upload_new_high_score)},
         "High_score_Tables": {}
-                }  # TODO add solve button or append it on to help
+                }
     swap_screen("Main")
 init()
 # </editor-fold>
@@ -298,7 +297,7 @@ class SudokuGrid(pygame.Rect):
     def get_grid(self):
         return tuple(self.grid)
 
-    def define_tiles(self):  # TODO continue doc strings
+    def define_tiles(self):
         SudokuTile.new_index = 0
         for tile in range(81):
             location = self.get_location(tile)
@@ -357,7 +356,7 @@ class SudokuGrid(pygame.Rect):
         self.set_grid_values(shuffle_grid(get_completed_grid_values()))
         generate_problem(self)
 
-    def write_to_text(self, file):  # TODO use JSON files
+    def write_to_text(self, file):
         with open(file, "w"):
             file.truncate()
             file.write("High score: %s \n" % str(self.highscore))
