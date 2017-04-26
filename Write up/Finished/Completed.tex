@@ -1,0 +1,1014 @@
+%
+% Sudoku Analysis Project
+% Edward Boulderstone
+% Computer Science A Level Project
+%
+%
+\documentclass[fleqn]{article}
+\usepackage{times}
+\usepackage{xcolor}
+\usepackage{comment}
+\usepackage{graphics}
+\usepackage[dvips]{graphicx}
+\usepackage[margin=10pt,font=small,labelfont=bf]{caption}
+\usepackage[margin=10pt,font=small,labelfont=bf]{subcaption}
+\usepackage[percent]{overpic}
+\usepackage{cite}
+\usepackage{titlesec}
+\usepackage{float}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[margin=25mm]{geometry}
+\usepackage{enumerate}
+\usepackage{tikz}
+\usetikzlibrary{graphs, shapes}
+\usepackage{sudoku}
+\usepackage{titlesec}
+
+
+
+\usepackage[utf8]{inputenc}
+
+\titleformat*{\section}{\normalfont\fontsize{14}{16}\normalfont\bf}
+\titleformat*{\subsection}{\normalfont\fontsize{12}{14}\normalfont\bf}
+\titleformat*{\subsubsection}{\normalfont\fontsize{12}{14}\normalfont}
+\titleformat*{\paragraph}{\normalfont\fontsize{12}{14}\normalfont}
+
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{8} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{8}  % for normal
+
+
+% Custom colors
+\usepackage{color}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+\definecolor{deeppurple}{rgb}{0.5,0,0.5}
+
+\usepackage{listings}
+
+\let\oldtabular\tabular
+\renewcommand{\tabular}{\footnotesize\oldtabular}
+\newcommand{\TextUnderscore}{\rule{.4em}{.4pt}}
+
+\renewcommand*\sudokuformat[1]{\large#1}
+\setlength\sudokusize{5cm}
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+language=Python,
+basicstyle=\ttm,
+numbers=left,
+otherkeywords={self},             % Add keywords here
+keywordstyle=\ttb\color{deepblue},
+emph={generate_key,place_cell,turn,rotation,Node,
+    identical_trees,generate_upload_grid,establish_connection,__init__},          % Custom highlighting
+emphstyle=\ttb\color{deepred},    % Custom highlighting style
+stringstyle=\color{deepgreen},
+frame=tb,                         % Any extra options here
+showstringspaces=false,            % 
+literate=
+            *{sudoku_grid}{{\textcolor{deepgreen}{sudoku\_grid}}}{9}
+            {rotation_angle}{{\textcolor{deepgreen}{rotation\_angle}}}{13}
+            {staticmethod}{{\textcolor{deeppurple}{staticmethod}}}{11},
+}}
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+\usepackage{epstopdf}
+\usepackage{tikz}
+\usetikzlibrary{decorations.markings}
+\usetikzlibrary{shapes,arrows}
+\usepackage{hyperref}
+\usetikzlibrary{positioning}
+  
+\titleformat*{\section}{\normalfont\fontsize{14}{16}\normalfont\bf}
+\titleformat*{\subsection}{\normalfont\fontsize{12}{14}\normalfont\bf}
+\titleformat*{\subsubsection}{\normalfont\fontsize{12}{14}\normalfont}
+\titleformat*{\paragraph}{\normalfont\fontsize{11}{13}\normalfont}
+
+\let\oldtabular\tabular
+\renewcommand{\tabular}{\footnotesize\oldtabular}
+
+\setcounter{secnumdepth}{4}
+
+\titleformat{\paragraph}
+{\normalfont\normalsize}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
+
+\newcommand*{\ProjectTitlePage}{
+\begingroup
+\vspace*{60pt}
+\centerline{\fontsize{16pt}{32pt}\selectfont\textbf{Sudoku Maker \& Solver Application}}
+\vspace*{60pt}
+\centerline{\fontsize{14pt}{24pt}\selectfont A project submission for a Computer Science A level}
+%\centerline{\fontsize{14pt}{24pt}\selectfont for the MSc in Advanced Computer Technologies}
+\vspace*{60pt}
+\centerline{\fontsize{14pt}{16pt}\selectfont by Edward Boulderstone}
+\vspace*{60pt}
+\centerline{\fontsize{14pt}{20pt}\selectfont Bourne Grammar School}
+\vspace*{60pt}
+\centerline{\fontsize{14pt}{20pt}\selectfont 2016/17}
+\endgroup}
+
+\begin{document}
+
+\ProjectTitlePage
+\newpage
+
+\tableofcontents
+
+\newpage
+\section{Analysis – Sudoku Maker/Solver}
+
+\subsection{Introduction}
+
+A Sudoku puzzle is a logic-based, combinatorial number-placement puzzle. The objective is to fill a 9x9 grid with digits so that each column, each row, and each of the nine 3x3 sub-grids that compose the grid (of tiles) contains all of the digits from 1 to 9. The puzzle setter provides a partially completed grid, which for a well-posed puzzle has a unique solution. (reference: \url{https://en.wikipedia.org/wiki/Sudoku})
+
+
+\begin{figure}[!htbp]
+\centering
+\begin{minipage}{.45\linewidth}
+\begin{sudoku}
+|4| | |8|1|5|6| | |.
+| | |7| | |3| |1| |.
+|8| | |4|7| | | | |.
+|2| | |1| | |7|9|8|.
+|1|7|5| | | |2|4|6|.
+|6|8|9| | |7| | |1|.
+| | | | |8|1| | |2|.
+| |2| |9| | |1| | |.
+| | |4|5|6|2| | |3|.
+\end{sudoku}
+\end{minipage}
+\hspace{.05\linewidth}
+\begin{minipage}{.45\linewidth}
+\begin{sudoku}
+|1| | | |9| | | |3|.
+|2|8|9| |1| |5|7|4|.
+|7| |6| |4| |1| |2|.
+| | |7|9|8|3|4| | |.
+|5|2| |1| |4| |8|9|.
+| |4|8|2|5|7|6|3| |.
+|4| | |6| |1| | |8|.
+|8| |5| |2| |3| |7|.
+| | | | |7| | | | |.
+\end{sudoku}
+\end{minipage}
+\end{figure}
+
+
+\subsection{Aims}
+The objectives of this project are to create a program that generates Sudoku puzzles that are solvable with a defined set of puzzle solving techniques; to provide a Graphical User Interface that uses these puzzles to create a interesting puzzle solving environment for the user; to provide a consistent and robust scoring method for puzzle solving.
+
+\subsection{Background}
+I chose this task because I enjoy solving Sudoku puzzles and have found there is a lack of Sudoku applications that use sophisticated solving techniques and have a rich set of user features. I am particularly interested in puzzle solving strategies such as \url{http://www.sudokuwiki.org/Jelly_Fish_Strategy} and \url{http://www.sudokuwiki.org/WXYZ_Wing}. The user features of interested include creating Sudoku puzzles at various levels of difficulty, providing hints to solve the puzzle at any point in the game and other user support tools to make puzzle solving more enjoyable.
+
+\subsection{Research}
+\subsubsection{Similar Programs}
+\subsubsection*{\url{http://www.sudokuwiki.org/sudoku.htm}}
+This is an expert-level Sudoku puzzle maker/solver with a cluttered and confusing user interface. However, what sets this maker/solver apart is the range of puzzle solving techniques that can be selected to complete a Sudoku puzzle and the documentation provided. These puzzle solving techniques form the basis of my analysis of the difficulty level of Sudoku puzzles which is used in my solution.
+
+\subsubsection*{\url{https://play.google.com/store/apps/details?id=com.brainium.sudoku.free&hl=en}}
+This is a Sudoku puzzle maker that is available from the Google Play Store. The special feature provided by this application is an intuitive help button. I plan to use a similar approach to providing help that operates at the different levels of difficulty provided by my application.
+
+\subsubsection{Other Programs}
+Many other Sudoku makers/solvers are available on the Internet. However, they have a similar set of basic features that allow a user to solve a limited set of Sudoku puzzles. The two applications described above provide distinct ideas which are used in my solution. A list of other Sudoku applications follows.
+\begin{itemize}
+\item{https://www.sudoku-solutions.com/}
+\item{https://play.google.com/store/apps/details?id=com.jdamcd.sudokusolver\&hl=en\_GB}
+\item{https://play.google.com/store/apps/details?id=com.alkobyshai.sudokusolver\&hl=en}
+\item{https://play.google.com/store/apps/details?id=com.enigon.sudokusolver\&hl=en}
+\item{https://play.google.com/store/apps/details?id=de.georgwiese.sudokusolver\&hl=en}
+\end{itemize}
+
+
+\subsection{Anticipated Difficulties}
+
+\subsubsection*{\url{http://stackoverflow.com/a/7280623}}
+‘Unless P = NP, there is no polynomial-time algorithm for generating general Sudoku puzzles with exactly one solution.
+In his master's thesis, Takayuki Yato defined The Another Solution puzzle (ASP), where the goal is, given a puzzle and some solution, to find a different solution to that puzzle or to show that none exists. Yato then defined ASP-completeness, puzzles for which it is difficult to find another solution, and showed that Sudoku is ASP-complete. Since he also proves that ASP-completeness implies NP-hardness, this means that if you allow for arbitrary-sized Sudoku boards, there is no polynomial-time algorithm to check if the puzzle you've generated has a unique solution (unless P = NP).’’
+
+This discussion from stackoverflow suggests that the fastest way to generate a Sudoku puzzle (ie a partially completed grid that a user can solve) from scratch (ie starting with a blank grid) is by brute force (try every combination of digits) as the puzzles are intractable. As this is a very time consuming process ( there are $9^{81}$ possible combinations – although clearly many of these are invalid) a more efficient method of generating Sudoku puzzles is required.
+The method chosen to create new Sudoku puzzles is to work backwards from a completed Sudoku grid. These completed grids are created by a trial and error, back-tracking algorithm. Once completed grids are available individual tiles can be blanked out and the Sudoku Solver can be used to determine how difficult the puzzle has become. If the puzzle has become too difficult the algorithm can back-track one step and attempt to remove an additional tile to achieve the level of difficulty required. This process is continued until a puzzle with the appropriate set of characteristics (level of difficulty, number of remaining tiles) has been created.
+
+\subsubsection*{\url{http://zhangroup.aporc.org/images/files/Paper_3485.pdf}}
+This paper describes how all the trivial Transformations of an individual Sudoku Grid can be computed. (Re-labelling, swapping rows, columns, rotations etc.). This information is used to dramatically reduce the number of Sudoku Grids that are hosted on the server and also increase the number of Sudoku puzzles that can be presented to a user to be solved. This is because a computationally trivial change to a Sudoku grid will look like a completely different puzzle.
+
+\subsection{Objectives}
+\begin{enumerate}
+\item To create a program that generates solvable Sudoku puzzles with the maximum number of blank tiles having only one solution.
+\item To create an automated method of solving Sudoku puzzles.
+\item To support a wide selection of Sudoku puzzle solving techniques in puzzle formation and solution.
+\item To provide a simple and elegant graphical user interface (gui) that provides a rich set of tools to a user(s) to solve Sudoku puzzles.
+\item To create a database of completed Sudoku grids which can be used as the basis for Sudoku puzzles.
+\item To provide, maintain and display a high scores table (moves/mistakes/time taken) so that users can track their puzzle solving performance.
+\item To provide a consistent scoring method for similar Sudoku puzzles.
+\end{enumerate}
+
+
+\subsection{Proposed Solution}
+I decided to split the solution to these objectives into three distinct modules. These modules are the client application that contains the user interface and resides on the client machine; the Sudoku puzzle generator that resides on the server and the administration module that also resides on the server. The administration module manages the communication between the components, the high-score table and provides access to the relational database that stores the Sudoku puzzles, high-score information and other ancillary information.
+
+The client application will contain the options menu and the main Sudoku playing area. The options menu will allow the user to set the features for puzzle playing. These features include the general difficulty level of the puzzles presented for solving, the specific Sudoku techniques that will be required to solve puzzles presented to the user and an option to permit the user to enter a Sudoku puzzle of their own from another source. If this final option is selected, a blank Sudoku grid will be presented to the user so that the initial digits of the external Sudoku puzzle can be entered.
+
+Once the button to start play on the user interface has been pressed, the predefined digits of the Sudoku puzzle will be locked in place and the user will be able to input digits into the Sudoku Grid. The user can write Dummy Values (which appear in a small font) into blank tiles to assist the user in solving the puzzle, ask for help (which will be a step-by-step guide on what Technique they should be used next) and a save and exit option. If the user chooses to save and exit, the next time the application is started, the user will be asked whether they want to continue with the previous puzzle, if this option is selected the previous puzzle will be retrieved from the local storage and presented to the user.
+
+The server will host the puzzle generator and the administration module. The administration module uses a mySQL database and a Raspberry PI as the hardware platform. This provides a cost effective database environment to support the server processing.
+
+\newpage
+\section{Documented Design: Sudoku Maker/Solver}
+
+\subsection{High Level Overview}
+
+The objective of this project is to create, automatically solve and grade (according to difficulty) randomly generated Sudoku puzzles. An easy to use graphical user interface is provided which allows a user to solve these puzzles, provide hints and maintain user scores. 
+
+The architecture consists of a server and one or more clients. In the server a Sudoku puzzle generator creates valid Sudoku grids along with a key to identify each puzzle. This key is used to identify each puzzle and to eliminate duplicate grids. The grid is stored in a SQL database that is resident on the server. This database is also used to record a user high scores table.
+
+The application in the client provides the user interface for the Sudoku puzzle. This client application retrieves completed Sudoku grids from the server. Then, using the games’ difficulty setting, it removes digits from the Sudoku grid to create a unique Sudoku puzzle of the appropriate level of difficulty. 
+
+Once the user has started to solve the puzzle, the partial solution is stored on persistent storage in the client machine so that the puzzle can be resumed after a break in play.  The user can also request hints to solve the puzzle. Once a puzzle has been completed the user can submit their results to the server which will include: level of difficulty, time taken, guesses made and hints used.
+
+\subsection{Server Side}
+
+\subsubsection{Class: Node}
+This class (Node) is used to calculate a unique key for each Sudoku grid. The class uses a tree structure to hold all the ‘trivial’ variations of a Sudodu grid including rotations, transformations, column and row switching. These trivial variations are created by simply swapping digits in the grid so can be regarded as the ‘same’ puzzle from a mathematical standpoint. A rotation is obtained by rotating all digits in the grid by $90^\circ$ (swapping x and y values); a transformation is obtained by swapping digits (eg. All one digits swapped with all two digits); column and row swapping is achieved by swapping adjacent sets (sub squares) of 3 columns or rows.
+
+When a new Sudoko grid has been created, a tree structure that contains all trivial variations of this new grid is computed, this is called the key. The leaf nodes of this key are compared with the previously computed keys to ensure that the new Sudoku grid is unique (except for the trivial variations). If any of the leaf nodes match the grid is discarded.
+
+
+\subsection{Key procedures}
+This flowchart shows the high=level operation of processes to create a complete Sudoku grid.
+% Define block styles
+\tikzstyle{decision} = [diamond, draw, fill=blue!20, 
+    text width=4.0em, text badly centered, node distance=3cm, inner sep=0pt]
+\tikzstyle{init} = [ellipse, draw, fill=yellow!20, 
+    text width=5em, text centered, rounded corners, minimum height=3em]
+\tikzstyle{block} = [rectangle, draw, fill=blue!20, 
+    text width=5em, text centered, rounded corners, minimum height=4em]
+\tikzstyle{class} = [rectangle, draw, anchor=west,
+    text width=7em, minimum height=2em]
+\tikzstyle{line} = [draw, -latex']
+\tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm,
+    minimum height=2em]
+\begin{center}
+\begin{tikzpicture}[node distance = 2cm, auto]
+    % Place nodes
+    \node [init] (start) {Start};
+    \node [block, below of=start] (generate_seed) {Generate Grid};
+    \node [block, below of=generate_seed] (generate_key) {Generate Key};
+    \node [block, below of=generate_key] (get_keys) {Get Keys};
+    \node [block, below of=get_keys] (check_key) {Check Key};
+    %\node [block, left of=evaluate, node distance=3cm] (update) {update model};
+    \node [decision, below of=check_key] (decide) {Is Key Unique?};
+    \node [block, below of=decide, node distance=3cm] (upload_seed) {Upload Seed};
+    \node [right of=upload_seed, node distance=3cm] (branch1) {};
+    \node [right of=generate_seed, node distance=3cm] (branch2) {};
+    \node [right of=decide, node distance=3cm] (branch3) {};
+    % Draw edges
+    \path [line] (start) -- (generate_seed);
+    \path [line] (generate_seed) -- (generate_key);
+    %\path [line] (generate_seed) |- (upload_seed);
+    \path [line] (generate_key) -- (get_keys);
+    \path [line] (get_keys) -- (check_key);
+    \path [line] (check_key) -- (decide);
+    \path [line] (decide) -- node [near start] {no} (branch3.east);
+    \path [line] (decide) -- node {yes}(upload_seed);
+    \draw [line] (upload_seed) -- (branch1.east) -- (branch3.east) -- (branch2.east) -- (generate_seed);
+\end{tikzpicture}
+\end {center}
+
+\subsubsection{Generate Grid}
+This procedure will generate a complete Sudoku Grid.
+The procedure uses a back-tracking algorithm to create a valid grid. It starts at the first row and column and inserts a random digit (0 to 9). For each subsequent tile (digital location) a randomly shuffled list of digits (0 to 9) is used to select the next candidate for insertion. This list is maintained with each tile location. If the next candidate produces a valid grid the digit is inserted and the next tile is processed. Each digit from the list is tested, if no digit can be found that produces a valid grid the algorithm back-tracks to the previous tile and tries the next digit from the list for this tile until it successfully fills the entire grid. 
+
+\subsubsection{Generate Key}
+This will generate a Key (all trivial variations of the grid) from a Sudoku grid. The Key will be generated by making a Tree using the Node class of all of the possible trivial transformations of the Sudoku seed.
+
+\subsubsection{Get Keys}
+This will return all of the Sudoku Keys from the SQL server. This is used to test for uniqueness of a new key.
+
+%\subsubsection{Check Keys}
+\subsubsection{Upload Grid}
+
+This function uploads the grid and its variations from the tree to the SQL server. The variations are converted from the tree structure to a plain text format by an ‘in order traversal’ algorithm.
+
+\subsubsection{High Score Manager}
+This function manages the high score table. When the high score table is updated the records are sorted by score and only the top five scores are retained.
+
+\subsection{SQL server (Raspberry pi)}
+A Raspberry pi is used for the server in this project including hosting the SQL server. Consideration was given to internet hosting however since the compute load is relatively light this was not thought necessary.
+
+\newpage
+\subsection{Client Side}
+\subsubsection{Flowchart}
+The following is a flow chart of the major functions of the client application. 
+
+\begin{center}
+\begin{tikzpicture}[node distance = 3cm, auto]
+
+    % Place nodes
+    \node [init] (start) {Start};
+    \node [decision, right of=start] (Server_init) {Is server \\ initialised?};
+    \node [block, below of=Server_init] (Retrive_grids) {Retrive completed Sudoku grids from mySQL server};
+    \node [block, below of=start] (Load_main) {Load main menu};
+    
+    \node [decision, below of=Load_main] (Select) {Select menu};
+    
+    \node [block, right of=Select, node distance = 3.5cm] (Load_options) {Load option menu};
+    \node [block, right of=Load_options] (Options_input) {Let user input options};
+    
+    \node [block, below of=Select] (Generate_puzzle) {Generate sudoku puzzle};
+    \node [block, right of=Generate_puzzle] (User_solve) {Let the user try to solve puzzle};
+    
+    \node [decision, below of=User_solve] (Beaten_puzzle_check) {Check if user has solved puzzle};
+    \node [decision, below of=Beaten_puzzle_check, node distance = 3.5cm] (Check_high_score) {\small Check if the user has achieved a high score};
+    
+    \node [block, right of=Check_high_score, node distance = 3.5cm] (Upload_high_score) {Upload new high scores to table};
+    \node [block, below of=Check_high_score] (Display_high_score) {Display high scores to the user};
+    
+    \node [init, right of=Server_init] (End) {End};
+    
+    \node [above of=Options_input, node distance = 1.1cm] (User_options_to_Node2) {};
+    \node [left of=User_options_to_Node2, node distance = 5cm] (Node1_to_Node3) {};
+    \node [left of=Retrive_grids, node distance = 1.5cm] (Node2_to_Load_Main) {};
+    
+    \node [left of=Display_high_score, node distance=4.5cm] (Display_to_Node4) {};
+    \node [above of=Retrive_grids, node distance=1.8cm] (Node4_to_Retrive) {};
+    \node [left of=Node4_to_Retrive, node distance = 4.5cm] (Node3_to_Node5) {};
+    
+    \node [right of=Beaten_puzzle_check, node distance=2cm] (Check_to_Node7) {};
+    \node [right of=User_solve, node distance=2cm] (Node6_to_Solve) {};
+    
+    \node [below of=Upload_high_score, node distance=3cm] (Upload_to_Display) {};
+    % Draw edges    
+    
+	\path [line] (start) -- (Server_init);
+	\path [line] (Server_init) -- node {Yes} (Retrive_grids);
+	\path [line] (Server_init) -- node {No} (End);
+	\path [line] (Retrive_grids) -- (Load_main);
+	\path [line] (Load_main) -- (Select);
+	\path [line] (Select) -- node {Options} (Load_options);
+	\path [line] (Load_options) -- (Options_input);
+	\path [line] (Select) -- node {Start Game} (Generate_puzzle);
+	\path [line] (Generate_puzzle) -- (User_solve);
+	\path [line] (User_solve) -- (Beaten_puzzle_check);
+	\path [line] (Beaten_puzzle_check) -- node {Yes} (Check_high_score);
+%	\path [line] (Beaten_puzzle_check) -- node {No} (User_solve);
+	\path [line] (Check_high_score) -- node {Yes} (Upload_high_score);
+	\path [line] (Check_high_score) -- node {No} (Display_high_score);
+	
+	\path [line] (Options_input) -- (User_options_to_Node2.center);
+	\path [line] (User_options_to_Node2.center) -- (Node1_to_Node3.center);
+	\path [line] (Node1_to_Node3.center) -- (Node2_to_Load_Main.center);
+	
+	\path [line] (Display_high_score) -- (Display_to_Node4.center);
+	\path [line] (Display_to_Node4.center) -- (Node3_to_Node5.center);
+	\path [line] (Node3_to_Node5.center) -- (Node4_to_Retrive.center);
+	
+	\path [line] (Upload_high_score) -- (Upload_to_Display.center);
+	\path [line] (Upload_to_Display.center) -- (Display_high_score);
+	
+	\path [line] (Beaten_puzzle_check) -- (Check_to_Node7.center);
+	\path [line] (Check_to_Node7.center) -- node {No} (Node6_to_Solve.center);
+	\path [line] (Node6_to_Solve.center) -- (User_solve);
+\end{tikzpicture}
+\end{center}
+
+\subsubsection{Classes}
+\paragraph{Inheritance Diagram}
+
+
+
+\begin{tikzpicture}[node distance = 1.5cm, auto]
+    % Place nodes
+    \node [class] (pygame_rect) {Pygame.Rect};
+    \node [class, below of=pygame_rect] (button) {Button};
+    \node [class, below of=button] (sudoku_tile) {Sudoku Tile};
+    \node [class, right =of sudoku_tile] (sudoku_grid) {Sudoku Grid};
+    \draw[-{latex[scale=3.0]}] (button) -- (pygame_rect);
+    \draw[-{latex[scale=3.0]}] (sudoku_tile) -- (button);
+    \draw[-{latex[scale=3.0]}] (sudoku_grid.west) -- (sudoku_tile.east);
+\end{tikzpicture}
+
+
+
+
+
+\paragraph{Button}
+This class will directly inherit from Pygame.Rect. Pygame.Rect inherits from Pygame which is provided by the Python libraries. The Button class will:
+\begin{itemize}
+\item Take a text string and outline flag that creates a text-based button with an optional outline easily.
+\item Take a function as an argument, allowing the button to transfer control to the function when the button is pressed.
+\end{itemize}
+The Button class is used for both normal game control and the digits within the Sudoku grid.
+\paragraph{Sudoku tile}
+Sudoku Tile is a class that will directly inherit from Button and will exclusively be used in the Sudoku grid class. This will provide:
+\begin{itemize}
+\item A text argument (entered and displayed to the user) to assist solving the puzzle (this could be used to display possible digits as small digits in each tile.)
+\item Functions to change the colour of the button/tile and to allow user input when selected.
+\end{itemize}
+\paragraph{Sudoku Grid}
+This class is a composition of Sudoku tiles, this class keeps track of:
+\begin{itemize}
+%\item The Ids of each Sudoku tile that this class is managing.
+\item The current Sudoku puzzle.
+\item High score information.
+\end{itemize}
+This class also provides a method to enumerate the tiles in a row or column so that checks can be made to determine if certain moves are legal, and for the help function.
+
+\subsubsection{Key procedures}
+ 
+ 
+
+
+\paragraph{Main}
+This function provides the main loop for the program. 
+
+\paragraph{Main Menu}
+The user will be greeted by the main menu when launching the game. From this menu the user will be able to start a game, enter the options menu or exit out of the game. The user will also return to the main menu when they finish a Sudoku puzzle.
+
+\paragraph{Draw Screen}
+This function draws the main screen, options menu and the Sudoku puzzle; the function is used to redraw the screen when the game is in progress.
+ 
+\paragraph{Options}
+This function manages the options menu. The design goal for the options menu is to allow the user to change as many aspects of the UI (colours/settings) as possible. This includes the Difficulty settings of the game, the hints the user can obtain and the colours of all the graphical elements. In addition, this menu allows the user to enter complete Sudoku puzzles from other sources.
+ 
+The Difficulty settings, within the options menu, controls various aspects of the game. These include the relative difficulty of solving the Sudoku puzzles presented to the user as calculated by the Sudoku generator; the amount of help the user is given, i.e. displaying all possible correct digits in tiles (hence eliminating the trivial incorrect digits); whether an incorrect move is accepted (this is important because an incorrect move in Sudoku makes the rest of the puzzle impossible to solve).
+
+\paragraph{Game Menu}
+From this window:
+\begin{itemize}
+\item The user can select tiles in the 9x9 grid with the left mouse button and input digits through the user's Keyboard. By using the right mouse button the user can choose to input dummy values.
+\item The user can ask for help, this will cause a message box to appear which will instruct the user how to continue with the Sudoku puzzle. This message box can be dismissed at any point if the user is satisfied with the help provided. Using this feature will disable recording of high scores, and a prompt will tell the user this.
+\item The user can ask the application to solve a Sudoku puzzle for them. The Game Menu will allow the user to input an external puzzle from another source (e.g. newspaper). The application will allow the user to solve this puzzle in the normal way or solve it automatically. This feature also disables recording of high scores.
+\item The user can choose to save and exit, if the user does this, the next time they start a puzzle they will be asked if they want to load their old puzzle or start a new one.
+\end{itemize}
+
+\paragraph{Import Seed}
+This will fetch the Completed puzzle from the SQL server and feed it into the Generate puzzle function.
+
+
+\paragraph{Generate puzzle}
+This will take a completed Sudoku grid from the SQL server together with the Difficulty level and generate a Sudoku puzzle for the user to complete. It will do this by first performing a trivial transformation of the puzzle then randomly removing tiles and checking to determine whether the puzzle can still be solved. This uses the difficulty settings to determine which solving strategies must be used to solve the puzzle. The higher the difficulty setting the more advanced the set of strategies that will be required to solve the puzzle.
+
+\paragraph{Submit Score to server}
+This will upload the users’ name, score and the Sudoku Key that was completed on to the server. The score will include how quickly the puzzle was completed (time) and how many mistakes were made.
+
+\newpage
+\section{Technical Solution}
+
+\subsection{Server}
+
+The architecture consists of a server and one or more clients. In the server a Sudoku puzzle generator creates a valid 9 by 9 Sudoku grid along with a unique key to identify each puzzle. The grid and unique key are stored in a SQL database that is resident on the server.
+
+\subsubsection{Place cell}
+ 
+This code places one digit into the cell indexed by the parameter $c$. This function is called recursively to fill the entire grid.
+Firstly a list of numbers 1 to 9 are shuffled (line 3 \& 4). The function checks whether the selected digit (Number) is in the row (line 6) and then in the column (line 7). If successful it tests to see whether the digit is in the sub-grid (line 8-10). If all tests are passes it sets the value into the Suduko grid (line 11).
+The termination condition is evaluated on line 12. If the end of the grid has been reached the completed Sudoku grid is returned.
+If any of the tests fail, the location in the grid is set to 'None' and the for loop continues (line 15).
+
+
+\begin{python}
+def place_cell(sudoku_grid, c=0):
+    column_number, row_number = divmod(c, 9)  # returns column,row
+    numbers = [count for count in range(1, 10)]
+    random.shuffle(numbers)
+    for Number in numbers:
+        if ((Number not in sudoku_grid[round_(c, 9):round_(c, 9) + 9]) and
+                (Number not in sudoku_grid[row_number::9]) and
+                all(Number not in sudoku_grid[round_(row_number, 3) + ((round_(column_number, 3) + count) * 9):
+                    round_(row_number, 3) + 3 + ((round_(column_number, 3) + count) * 9)]
+                    for count in range(0, 3))):  # checks grid
+            sudoku_grid[c] = Number
+            if c + 1 >= 81 or place_cell(sudoku_grid, c + 1):
+                return sudoku_grid
+    else:
+        sudoku_grid[c] = None
+        return None
+\end{python}
+
+\subsubsection{Rotation \& Turn}
+ 
+This code does matrix rotation of a Sudoku grid represented by a one-dimensional array (array) at $90^\circ$, $180^\circ$ or $270^\circ$ using the following formula.
+
+\[
+\begin{bmatrix}
+\cos{\theta} & -\sin{\theta}\\
+\sin{\theta} & \cos{\theta}\\
+\end{bmatrix}
+\begin{bmatrix}
+x\\ 
+y\\
+\end{bmatrix}
+=
+\begin{bmatrix}
+x\cos{\theta} -y\sin{\theta}\\
+x\sin{\theta} + y\cos{\theta}\\
+\end{bmatrix}
+\]
+\newline
+The function rotation rotates the grid, stored as a one dimensional array (array) by the angle of rotation to map a set of x-y coordinates to the rotated version of these co-ordinates (lines 6-18). Then it calls the turn function. The turn function uses the mapping function rotate\_to to create a new one-dimensional array (rotated\_array) of the rotated values.
+
+
+\begin{python}
+def rotation(array, rotation_angle, length):  # uses matrix rotation
+    try:
+        length = length[0]
+    except (AttributeError, TypeError):
+        pass
+    if rotation_angle == 90:
+        def rotate_to(x, y):
+            return x, length - y
+
+        rotated_array = turn(array, rotate_to, length)
+    elif rotation_angle == 180:
+        def rotate_to(x, y):
+            return length - y, length - x
+
+        rotated_array = turn(array, rotate_to, length)
+    elif rotation_angle == 270:
+        def rotate_to(x, y):
+            return length - x, y
+
+        rotated_array = turn(array, rotate_to, length)
+    try:
+        return rotated_array
+
+    except NameError:
+        return array
+
+
+def turn(array, rotate_to, length):
+    rotated_array = [None for _ in range((length + 1) ** 2)]
+    for index, index_value in enumerate(array):
+        y, x = divmod(index, length + 1)
+        new_y, new_x = (rotate_to(x, y))
+        new_index = new_y * (length + 1) + new_x
+        rotated_array[new_index] = index_value
+    return rotated_array
+\end{python}
+
+
+\subsubsection{Generate Key}
+ 
+This function creates a data structure that contains all the information to match trivial versions of the passed Sudoku grid. The data structure consists of 3 levels, the highest level supports the 4 rotated versions of the grid ($0^\circ$, $90^\circ$, $180^\circ$ and $270^\circ$), the second level supports all of the possible digit swapping permutations (9 factorial in total). The third level supports all of the valid sub-grid (3x3) positions within the grid (9 positions). This data structure therefore could be used to construct all possible permutations of the passed Sudoku grid and can therefore be used to uniquely identify a Sudoku grid.
+
+The diagram below provides a visual representation of this data structure. It shows a tree with 'full list' as the parent node that has the 4 rotations as immediate children. Each rotation has 9 factorial children (with only one set of nodes shown here) under the $90^\circ$ Rotation node. These child nodes represent the digit swapping permutations. These digit swapping nodes also have child nodes that store the sub-grid locations (with only 4 of the 9 shown in the diagram. The sub-grid nodes contain a list of 5 sets of sub-grid digits that defines the individual permutation.
+\usetikzlibrary{graphs, shapes}
+
+\begin{tikzpicture}[new set=import nodes, 
+every node/.style = {ellipse, draw, align=center, anchor=north, 
+                     top color=white, bottom color=blue!20}]]
+\begin{scope}[nodes={set=import nodes}] % make all nodes part of this set
+\node (full_list) at (3*1.5,4*1.5) {\small full list};
+\node (0Rotation) at (0*1.5,3*1.5) {\small rotation \\ $0^\circ$};
+\node (90Rotation) at (2*1.5,3*1.5) {\small rotation \\ $90^\circ$};
+\node (180Rotation) at (4*1.5,3*1.5) {\small rotation \\ $180^\circ$};
+\node (270Rotation) at (6*1.5,3*1.5) {\small rotation \\ $270^\circ$};
+\node (1stNumberSwap) at (0*1.5,2*1.5) {\small $\{1,2,3,...\}$\\$\Rightarrow$\\$\{1,2,3,...\}$};
+\node (2ndNumberSwap) at (2*1.5,2*1.5) {\small $\{1,2,3,...\}$\\$\Rightarrow$\\$\{2,3,4,...\}$};
+\node (3rdNumberSwap) at (4*1.5,2*1.5) {\small $\{1,2,3,...\}$\\$\Rightarrow$\\$\{3,4,5,...\}$};
+\node (4thNumberSwap) at (6*1.5,2*1.5) {\small $\{.,.,.,...\}$\\$\Rightarrow$\\$\{.,.,.,..\}$};
+\node (subgrid1) at (0*1.5,0.0*1.5) {\small top left\\ subgrid};
+\node (subgrid2) at (2*1.5,0.0*1.5) {\small top middle\\ subgrid};
+\node (subgrid3) at (4*1.5,0.0*1.5) {\small top right\\ subgrid};
+\node (subgrid4) at (6*1.5,0.0*1.5) {\small ...\\ subgrid};
+\end{scope}
+\graph {
+(import nodes);
+% "import" the nodes
+full_list -> {0Rotation, 90Rotation, 180Rotation, 270Rotation},
+%0Rotation -> {1stNumberSwap, 2ndNumberSwap, 3rdNumberSwap, 4thNumberSwap},
+90Rotation -> {1stNumberSwap, 2ndNumberSwap, 3rdNumberSwap, 4thNumberSwap},
+%180Rotation -> {1stNumberSwap, 2ndNumberSwap, 3rdNumberSwap, 4thNumberSwap},
+%270Rotation -> {1stNumberSwap, 2ndNumberSwap, 3rdNumberSwap, 4thNumberSwap}
+2ndNumberSwap -> {subgrid1, subgrid2, subgrid3, subgrid4},
+};
+\end{tikzpicture}
+
+The code at lines 4-20 create all the valid sub-grids for the passed Sudoku grid (level 3). While the code at lines 21-25 creates the 'digit-swapping' permutations and the rotations are constructed at line 26. The output from the function is a list of all possible variations (full\_list).
+
+\begin{python}
+def generate_key(sudoku_grid):
+    full_list = []
+    check_list = []
+    for Index_Tile in range(0, 9):
+        for Row in range(0, 3):
+            for Tile_Row in range(3):
+                check_list[Row * 9 + Tile_Row * 3:Row * 9 + (Tile_Row + 1) * 3] = \
+                    sudoku_grid[(((Index_Tile // 3) + Row) * 9 + Tile_Row * 3 + Index_Tile % 3) * 3:
+                         (((Index_Tile // 3) + Row) * 9 + Tile_Row * 3 + 1 + Index_Tile % 3) * 3]
+        for Column in range(1, 3):
+            for Tile_Row in range(3):
+                check_list[27 + (Column - 1) * 9 + Tile_Row * 3:27 + (Column - 1) * 9 + (Tile_Row + 1) * 3] = \
+                    sudoku_grid[((Index_Tile // 3) * 9 + Tile_Row * 3 + (Index_Tile + Column) % 3) * 3:
+                         ((Index_Tile // 3) * 9 + Tile_Row * 3 + 1 + (Index_Tile + Column) % 3) * 3]
+        check_lists = [check_list,
+                       [check_list[9:18] + check_list[:9] + check_list[18:]][0],
+                       [check_list[18:27] + check_list[:18] + check_list[27:]][0],
+                       [check_list[27:36] + check_list[:27] + check_list[36:]][0],
+                       [check_list[36:] + check_list[:36]][0]]
+        tile_indexed = []
+        for StartIndex in range(len(check_lists)):
+            index = [x for x in range(1, 10)]
+            for _ in itertools.repeat(None, 3):
+                change_dict = {index[x]: x_value for x, x_value in enumerate(check_lists[StartIndex][:9])}
+                tile_indexed.append([change_dict[int(x)] for x in check_lists[StartIndex][9:]])
+                index = rotation(index, 90, 2)
+        full_list.append(tile_indexed)
+    return full_list
+    }
+\end{python}
+
+\subsubsection{Node}
+
+The Node class is a holder for the full list parent node described in the Generate Key class above.
+
+\begin{python}
+class Node:
+    # this will be used for the ID of the sudoku grids
+    def __init__(self, children):
+        self.children = children
+
+    def get_children(self):  # This will return all of this node's child nodes
+        return self.children
+
+    @staticmethod
+    def get_type():  # This function will test (when comparing two Trees)
+        # if the current object is a node class or a list
+        return True
+\end{python}
+
+\subsubsection{identical\_trees}
+
+The identical\_trees function tests to determine whether two Nodes are identical. It is used to ensure unique Sudoku grids are created.
+
+\begin{python}
+def identical_trees(root1, root2):  # This will check if the two nodes have identical children and
+    # thus are identical Sudoku puzzles
+    try:
+        if root1.get_type() == root2.get_type():  # If the two objects are part of the Node class,
+            #  if not trigger an AttributeError
+            for child1, child2 in itertools.product(root1.get_children(), root2.get_children()):
+                # Checks if they share the same children
+                if child1 == child2:
+                    return True
+                else:
+                    if identical_trees(child1, child2):
+                        return True
+    except AttributeError:
+        if root1 == root2:
+            return True
+\end{python}
+
+\subsubsection{generate\_upload\_grid}
+
+The generate\_upload\_grid function stores a new Sudoku grid (created by generate\_completed\_grid - line 10) if it is not a duplicate of a grid that is already in the database. The function selects all grids from the table (line 6) and tests to determine whether the uploaded\_grid is equal to new grid (line 14). If no match is found the grid is stored in the database with the insert SQL command (line 20).
+
+
+\begin{python}
+def generate_upload_grid(connection, table):
+    db = connection[0]
+    cur = connection[1]
+    cur.execute("SELECT grid FROM " + table)
+    uploaded_grids = cur.fetchall()
+    uploaded_grids = [uploaded_grid[0] for uploaded_grid in uploaded_grids]
+    while True:
+        grid = generate_completed_grid()
+        if VERBOSE:
+            print("Grid generated")
+
+        if not any(identical_trees(generate_seed(uploaded_grid), generate_seed(grid))
+                   for uploaded_grid in uploaded_grids):
+            if VERBOSE:
+                print("No copy of grid uploaded")
+            grid = str("".join(map(str, grid)))
+            uploaded_grids.append(grid)
+            cur.execute("INSERT INTO " + table + "(grid) VALUES ('" + str("".join(map(str, grid))) + "')")
+            db.commit()
+        elif VERBOSE:
+            print("Grid already uploaded")
+            print()
+\end{python}
+
+\subsubsection{establish\_connection}
+
+The establish\_connection function attempts connect to a local MySql database. If this connection fails it attempts to connect to port-forwarded remote database hosted on the Raspberry Pi. If successful it displays a message and prepares the database for transactions.
+
+\begin{python}
+def establish_connection(connection_address):
+    while True:
+        try:
+            db = mysql.connector.Connect(**connection_address)
+        except mysql.connector.errors.InterfaceError:
+            if connection_address['host'] != HOSTS[1]:
+                connection_address['host'] = HOSTS[1]
+                print("Server unreachable, trying local IP")
+                continue
+            else:
+                print("Server down please try again")
+                exit()
+        break
+    print("Connection established")
+    db.start_transaction(isolation_level='READ COMMITTED')
+    cur = db.cursor(buffered=True)
+    return [db, cur]
+\end{python}    
+
+\subsection{Client}
+The client application provides the user interface through which the user selects the puzzle options, solves the puzzle and provides a facility to enter an external Sudoku puzzle.
+When the user presses the start game button, the application retrieves a completed Sudoku grid from the server and then, using the games difficulty setting, it eliminates digits from the Sudoku grid to create a unique Sudoku puzzle of the appropriate level of difficulty.
+Once the user has started to solve the puzzle, the partial solution is stored on persistent storage in the client machine so that the puzzle can be resumed after a break in play. The user can also request hints to solve the puzzle. Once a
+puzzle has been completed the user can submit their results to the server which will include: level of difficulty, time taken, guesses made and hints used.
+    
+\subsubsection{Button}
+
+The Button class inherits from an external library (Pygame) and is used to display the Sudoku grid and tiles, menu buttons and high scores table. It supports different text colours, automatic font selection to fit the text onto the button and generically processes button events.
+
+\begin{python}
+class Button(pygame.Rect):
+#
+# Button(pygame.Rect)
+# Class for the on screen buttons (these will be what the user interacts with)
+#
+
+    def __init__(self, left, top, width, height, function, fill_type, text="",
+                 args=None, colour=pygame.Color(0, 0, 0), source=Screen,          text_colour=pygame.Color(0, 0, 0)):
+        super().__init__(self)
+        self.left, self.top, self.width, self.height = left, top, width, height
+        self.text = text
+        self.function = function
+        self.fill_type = fill_type
+        self.Colour = colour
+        self.args = args
+        self.source = source
+        self.text_colour = text_colour
+#
+# draw(self)
+# function to render the button onto the screen including text
+#
+    def draw(self):
+        pygame.draw.rect(self.source, (190, 190, 190), self)
+        if self.fill_type == "Outline":
+            pygame.draw.rect(self.source, self.Colour, self, 5)
+        else:
+            pygame.draw.rect(self.source, self.Colour, self)
+        self.init_render_font_to_rect()
+        self.update()
+#
+# init_render_font_to_rect(self) 
+# function to render text onto the button, splits the text into separate lines, 
+# and uses calc_font_size for each line to select the appropriate font to fit the 
+# button
+#
+    def init_render_font_to_rect(self):
+        font_sizes = []
+        breaks = self.text.count("\n")
+        temp_text = self.text
+        if breaks:
+            for _ in range(breaks + 1):
+                render_text, temp_text = temp_text[:temp_text.index("\n")], temp_text[temp_text.index("\n"):]
+                font_sizes.append(self.calc_font_size(render_text, breaks))
+            font_size = min(font_sizes)
+            temp_text = self.text
+            for count in range(1, breaks + 2):
+                try:
+                    render_text, temp_text = temp_text[:temp_text.index("\n")], temp_text[temp_text.index("\n") + 1:]
+                    self.render_font_to_rect(render_text, font_size, count, breaks)
+                except ValueError:
+                    self.render_font_to_rect(temp_text, font_size, count, breaks)
+
+        else:
+            font_size = self.calc_font_size(self.text, 0)
+            self.render_font_to_rect(self.text, font_size, 1, 0)
+#
+# render_font_to_rect(self, text, font_size, count, breaks)
+# function to draw the text onto the button
+#
+    def render_font_to_rect(self, text, font_size, count, breaks):
+        font_rect = FONT.get_rect(text, size=font_size)
+        FONT.render_to(self.source, (((self.left + self.width / 2) - font_rect.width / 2),
+                                     (self.top + (self.height * count / (breaks + 2))) - (font_rect.height / 2)),
+                       text, self.text_colour, size=font_size)
+#
+# calc_font_size(self, text, breaks)
+# function to calculate the appropriate font size for the text
+#
+    def calc_font_size(self, text, breaks):
+        end_while = False
+        increment = 10
+        while not end_while:
+            font_rect = FONT.get_rect(text, size=increment)
+            if font_rect.height > (self.height / (breaks + 1)) or font_rect.width > (2 / 3) * self.width:
+                increment -= 1
+                end_while = True
+            else:
+                increment += 1
+        return increment
+#
+# update(self) 
+# function to update screen at button location
+#
+    def update(self):
+        pygame.display.update(self)
+#
+# check_clicked_on(self, loc) - function to handle button events
+#
+    def check_clicked_on(self, loc):
+        if self.collidepoint(loc):
+            return self, self.function, self.args
+        else:
+            return False, None, None
+#
+# change_text(self, new_text) 
+# function to update the text shown on the button
+#
+    def change_text(self, new_text):
+        self.text = str(new_text)
+\end{python}
+
+\subsubsection{TextBox}
+
+The TextBox class inherits from the Button class, it provides text input and edit  support to allow the user to input and modify text, in particular it supports delete and escape functions.
+
+\begin{python}
+class TextBox(Button):
+    def __init__(self, left, top, width, height, function, args=None, max_values=10, text="",
+                 colour=pygame.Color(0, 0, 0), source=Screen, text_colour=pygame.Color(0, 0, 0)):
+        self.left, self.top, self.width, self.height = left, top, width, height
+        self.text = text
+        self.Colour = colour
+        self.source = source
+        self.text_colour = text_colour
+        self.max_values = max_values
+        self.function = function
+        self.args = args
+        super().__init__(self.left, self.top, self.width, self.height, None, "Fill",
+                         colour=self.Colour, text_colour=self.text_colour)
+
+    def edit(self, event):
+        if (event.key == 8 or event.key == 127 or event.key == 266) and len(self.text) > 0:
+            self.text = "".join(list(self.text)[:-1])
+        elif event.key in range(49, 58) and len(self.text) != 10:
+            self.text += event.unicode
+        elif event.key == 13:
+            self.function(self.text, self.args)
+
+            swap_screen("High_score_Tables")
+
+    def set_args(self, new_args_list):
+        self.args = new_args_list
+\end{python}
+
+\newpage
+\section{Evaluation}
+
+\subsection{Objectives}
+The following is a list of objectives for the project and the progress that was made against each objective.
+
+\begin{enumerate}
+
+
+\item{\textit{To create a program that generates solvable Sudoku puzzles with the maximum number of blank tiles having only one solution.}}
+
+Fully Completed – This was achieved by randomly blanking out tiles from a complete(all tiles contain digits) Sudoku grid. The complete Sudoku grid was created on the server by the place\_cell function. These grids are then stored in the mySQL database for retrieval by the client. The client retrieves the completed Sudoku grid, performs a random combination of trivial transformations ( rotation, number swap, shuffles) and then randomly removes digits from the grid, to form an appropriate Sudoku puzzle. These processes include a step to ensure that the Sudoku puzzle is solvable using a defined set of Sudoku solving techniques.
+
+\item{\textit{To create an automated method of solving Sudoku puzzles.}}
+See item 3 below.
+\item{\textit{To support a wide selection of Sudoku puzzle solving techniques in puzzle formation and solution.}}
+
+Fully Completed – This was achieved by using a set of Sudoku puzzle solving techniques for which a set of functions was written. The solving functions were used iteratively as each time a dummy value (a possible digit in a Sudoku tile) is removed from the puzzle, one or more of the other solving techniques may enable removal of more dummy values leading ultimately to a solution of the Sudoku tile and puzzle.  
+The Sudoku puzzle solving techniques that were used are:
+\begin{enumerate}
+
+\item{Trivial Dummy Values}
+
+The Trivial Dummy values functions removes dummy values based on the resolved digits by eliminating all dummy values that are the same as the resolved digits in their respective row, column or sub-grid.
+
+\item{Tuples}
+
+The Tuples functions obtains the set of 9 lists of dummy values from a row, column or sub-grid that is passed to it. The function then iterates through the solve functions, which look for sets of digits that are restricted to one, two or three tiles and look for a set of tiles where only one, two or three digits can be located (these are called hidden 1 singles, pairs, triples and naked 2 singles, pairs, triples). If a hidden or naked tuple is found all dummy variables that are no longer valid are removed from the remaining tiles (See the functions: remove naked tuples, remove hidden tuples below)
+
+\item{Intersection Removal}
+
+The Intersection Removal functions attempts to use the method Pointing Pairs, Pointing
+Triples and Box Line Reduction to remove dummy values from tiles. The Pointing Pairs and Pointing Triples methods identifies pairs or triples of aligned digits in the sub-grid, since these aligned digits must occur in the sub-grid, they can be eliminated from the corresponding row or column in the full Sudoku grid. 
+The Box Line Reduction method identifies pairs or triples of digits in a row, that only occur in the same sub-grid. These digits can be eliminated from the other tiles not on that row in the sub-grid.
+
+\end{enumerate}
+
+\item{\textit{To provide a simple and elegant graphical user interface (gui) that provides a rich set of tools to a user(s) to solve Sudoku puzzles.}}
+
+Partially Completed - A set of classes were written (Button, TextBox, SudokuGrid \& SudokuTile) to provide the Graphical User Interface. To maintain consistency and ease of use the same class (Button) was used for all user event handling, and as the base class for both TextBox and SudokuTile. This inheritance of the functionality in Button ensured that the TextBox and SudokuTile classes respond the same way to user interaction as the Button class itself. 
+
+A high level description of each GUI class 
+\begin{enumerate}
+
+\item{Button}
+
+The Button class inherits from an external library Pygame and is used to display the Sudoku grid and tiles, menu buttons and high scores table. It supports different text colours, automatic font selection to fit the text onto the button and generically processes button events.
+
+\item{TextBox}
+
+The TextBox class inherits from the Button class, it provides text input and edit support to allow the user to input and modify text, in particular it supports delete and escape functions.
+
+\item{SudokuGrid}
+
+The SudokuGrid class is the main class of the client application. It contains the current Sudoku puzzle including: the Sudoku tile information, display location of the grid, start and elapsed time and number of changes made to the puzzle. It provides functionality to: create a Sudoku puzzle, render the puzzle, store and retrieve the puzzle on local disk, respond to user events and detect when the puzzle has been completed.
+
+\item{SudokuTile}
+
+The SudokuTile class holds all the information contained within each tile in the Sudoku grid. This consists of the tile’s value, if any, and the dummy values (remaining valid digits). This class also holds status and display information.
+\end{enumerate}
+
+While the basic objective of providing a simple and elegant graphical user interface was achieved insufficient time was available to create some of the rich tools that were originally envisaged, this includes the comprehensive hints for solving Sudoku puzzles.
+
+\item{\textit{To create a database of completed Sudoku grids which can be used as the basis for Sudoku puzzles.}}
+
+Fully Completed - A database of completed Sudoku grids was created and stored in the mySQL database. This was achieved by the place\_cell function. This function is called recursively to fill the entire grid. A list of possible digits is maintained for each tile. One digit is selected for each tile and various tests are performed to ensure that this digit is valid. If this digit is valid it is written into the Sudoku grid, otherwise the algorithm backtracks, selects the next digit and continues until completion. This algorithm always terminates with a valid Sudoku grid.
+
+\item{\textit{To provide, maintain and display a high scores table (moves/mistakes/time taken) so that users can track their puzzle solving performance.}}
+
+Fully completed - This was achieved by using a client server architecture with the high scores table stored in the mySQL database on the server. In addition functions were written ( make new top 5, upload high score, upload new high score, check user high score, get high scores \& initialise high scores) in the client to manage and display the high score table.
+
+\item{\textit{To provide a consistent scoring method for similar Sudoku puzzles.}}
+
+Fully Completed - Similar Sudoku puzzles were created by random trivial transformations of centrally created completed Sudoku grids. 
+The software that creates the Sudoku grids ensures that they are unique by enumerating all trivial transformations of these grids and comparing them with grids already stored in the database. This comparison is done using a 4 level tree structure in the Node class. 
+The Sudoku puzzle is created on the client application by randomly removing digits but checking that the puzzle is still solvable using the Sudoku solving techniques described above, this ensures that the difficulty level of the puzzle is consistent for different users.
+A separate high scores table is stored for each of the unique Sudoku grids which ensures that the high score table is a function of the difficulty of the Sudoku puzzle.
+
+\end{enumerate}
+
+
+\subsection{Future Improvements}
+
+This section describes potential future improvements for the Sudoku maker/solver. From the research of other Sudoku maker/solvers available on the internet, there are a wide variety of future improvements that could be suggested. The priority of these improvements should be determined by user feedback from their experience of using the application.  
+\begin{enumerate}
+
+
+\item{\textit{Puzzle solving hints}}
+
+As the application can solve the Sudoku puzzle, in-context hints could be provided to the user, throughout the puzzle solving process. These hints would provide the next logical step in solving the puzzle and would potentially teach the user new Sudoku solving techniques. However, if hints are provided to the user, the high scores functionally would not be used and the user would be warned. 
+
+\item{\textit{Include additional Sudoku puzzle solving techniques}}
+
+The current application includes 9 puzzle solving techniques. However, the research in this report shows that a number of more complex solving techniques exist. These could be easily incorporated into the current application to create a richer, more complex set of Sudoku puzzles.
+To graduate the level of difficulty of Sudoku puzzles a difficulty level could be established for each of the puzzle solving techniques. The user could then select a level of difficulty for the Sudoku puzzle appropriate for them.
+
+
+\item{\textit{Improvements to Graphical User Interface}}
+
+Based on user feedback through survey, word of mouth and other sources, specific changes to the user interface could be defined. This could include:
+\begin{itemize}
+\item{Addition of a background image}
+\item{Shape of graphical items(style)}
+\item{Number highlighting}
+\item{Other items found from alternate Sudoku websites}
+\end{itemize}  
+
+\item{\textit{Cross Platform Support}}
+
+The initial version of the software was written as a client server application in python. This could be ported to the web and/or to mobile environment as many users are using mobile devices.
+
+\item{\textit{Support for Multiple Sudoku Type Puzzles}}
+
+There are a large number of variants of the basic Sudoku puzzle, these include: Mini Sudoku, Killer Sudoku, Alphabetical Sudoku, Kaodoku and Hypersudoku \footnote{https://en.wikipedia.org/wiki/Sudoku}. While the functionality to support these different types of Sudoku puzzle would have to be written the underlying Suoku solving logic is the same. Therefore, the software that has been written could be extended to support these different versions of Sudoku. 
+
+\item{\textit{History for Each User}}
+
+To observe the development of Sudoku solving skills for a particular user, a history of the user's performance in solving Sudoku puzzles would be kept on users device. This could be shown to the user on demand.
+
+\item{\textit{Monetisation}}
+
+To generate revenue from this application either ads could be shown or a small subscription fee could be charged. These changes would have to be carefully introduced so that the users were not alienated from the service. 
+
+\end{enumerate}
+
+\newpage
+\section{Glossary}
+\subsection*{Dummy Values}
+Dummy Values are a list of the remaining possible digits for a tile.
+\subsection*{Sub-grid}
+A 3x3 grid of tiles that does not contain duplicate digits.The sub-grids are located on the boundaries of the grid and in the centre.
+\subsection*{Sudoku grid}
+A 9x9 grid of tiles. 
+\subsection*{Sudoku puzzle}
+A Sudoku puzzle is a Sudoku Grid that has some tiles with digits set. Only one arrangement of additional digits can create a valid completed Sudoku grid.
+\subsection*{Techniques}
+A technique is a single method of solving a Sudoku puzzle, such as Last Remaining Cell in a Row\footnote{http://www.sudokuwiki.org/Getting\_Started}.
+\subsection*{Tile}
+A Sudoku Tile is an element of a Sudoku grid that can contain one non-zero single digit value.
+\subsection*{Trivial Transformations}
+A Trivial Transformation of a Sudoku grid is a simple re-arrengement of the digits in the grid that maintains the level of complexity of the grid for example rotation by $90^\circ$.
+\end{document}

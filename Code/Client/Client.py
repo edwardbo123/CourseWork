@@ -644,7 +644,11 @@ def swap_screen(menu):
     The swap screen function provides the facility to swap the display between each of the separate menus
     """
     global Screen, DIMENSIONS, current_menu, buttons
-    old_menu = current_menu
+    old_menu = None
+    try:
+        old_menu = current_menu
+    except NameError:
+        pass
     current_menu = menu
     if menu in DIMENSIONS.keys():
         new_screen_size = (DIMENSIONS[menu]["X"], DIMENSIONS[menu]["Y"])
@@ -1260,14 +1264,10 @@ def upload_new_high_score(name, new_high_scores, connection=establish_connection
         if len(field_values) > 15:
             field_values = field_values[:15]+","
         if column_number:
-            print(field_values)
             field_values = field_values.replace(",", " changes \n").replace("|", " made ")
-            print(field_values)
             buttons["High_score_Tables"]["High_change_table"].text += field_values
         else:
-            print(field_values)
             field_values = field_values.replace(",", " seconds \n").replace("|", " finished in ")
-            print(field_values)
             buttons["High_score_Tables"]["High_time_table"].text += field_values
 
     db.commit()

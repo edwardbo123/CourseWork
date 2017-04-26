@@ -1,0 +1,41 @@
+\BOOKMARK [1][-]{section.1}{Analysis \205 Sudoku Maker/Solver}{}% 1
+\BOOKMARK [2][-]{subsection.1.1}{Introduction}{section.1}% 2
+\BOOKMARK [2][-]{subsection.1.2}{Aims}{section.1}% 3
+\BOOKMARK [2][-]{subsection.1.3}{Background}{section.1}% 4
+\BOOKMARK [2][-]{subsection.1.4}{Research}{section.1}% 5
+\BOOKMARK [3][-]{subsubsection.1.4.1}{Similar Programs}{subsection.1.4}% 6
+\BOOKMARK [3][-]{subsubsection.1.4.2}{Other Programs}{subsection.1.4}% 7
+\BOOKMARK [2][-]{subsection.1.5}{Anticipated Difficulties}{section.1}% 8
+\BOOKMARK [2][-]{subsection.1.6}{Objectives}{section.1}% 9
+\BOOKMARK [2][-]{subsection.1.7}{Proposed Solution}{section.1}% 10
+\BOOKMARK [1][-]{section.2}{Documented Design: Sudoku Maker/Solver}{}% 11
+\BOOKMARK [2][-]{subsection.2.1}{High Level Overview}{section.2}% 12
+\BOOKMARK [2][-]{subsection.2.2}{Server Side}{section.2}% 13
+\BOOKMARK [3][-]{subsubsection.2.2.1}{Class: Node}{subsection.2.2}% 14
+\BOOKMARK [2][-]{subsection.2.3}{Key procedures}{section.2}% 15
+\BOOKMARK [3][-]{subsubsection.2.3.1}{Generate Grid}{subsection.2.3}% 16
+\BOOKMARK [3][-]{subsubsection.2.3.2}{Generate Key}{subsection.2.3}% 17
+\BOOKMARK [3][-]{subsubsection.2.3.3}{Get Keys}{subsection.2.3}% 18
+\BOOKMARK [3][-]{subsubsection.2.3.4}{Upload Grid}{subsection.2.3}% 19
+\BOOKMARK [3][-]{subsubsection.2.3.5}{High Score Manager}{subsection.2.3}% 20
+\BOOKMARK [2][-]{subsection.2.4}{SQL server \(Raspberry pi\)}{section.2}% 21
+\BOOKMARK [2][-]{subsection.2.5}{Client Side}{section.2}% 22
+\BOOKMARK [3][-]{subsubsection.2.5.1}{Flowchart}{subsection.2.5}% 23
+\BOOKMARK [3][-]{subsubsection.2.5.2}{Classes}{subsection.2.5}% 24
+\BOOKMARK [3][-]{subsubsection.2.5.3}{Key procedures}{subsection.2.5}% 25
+\BOOKMARK [1][-]{section.3}{Technical Solution}{}% 26
+\BOOKMARK [2][-]{subsection.3.1}{Server}{section.3}% 27
+\BOOKMARK [3][-]{subsubsection.3.1.1}{Place cell}{subsection.3.1}% 28
+\BOOKMARK [3][-]{subsubsection.3.1.2}{Rotation \046 Turn}{subsection.3.1}% 29
+\BOOKMARK [3][-]{subsubsection.3.1.3}{Generate Key}{subsection.3.1}% 30
+\BOOKMARK [3][-]{subsubsection.3.1.4}{Node}{subsection.3.1}% 31
+\BOOKMARK [3][-]{subsubsection.3.1.5}{identical\137trees}{subsection.3.1}% 32
+\BOOKMARK [3][-]{subsubsection.3.1.6}{generate\137upload\137grid}{subsection.3.1}% 33
+\BOOKMARK [3][-]{subsubsection.3.1.7}{establish\137connection}{subsection.3.1}% 34
+\BOOKMARK [2][-]{subsection.3.2}{Client}{section.3}% 35
+\BOOKMARK [3][-]{subsubsection.3.2.1}{Button}{subsection.3.2}% 36
+\BOOKMARK [3][-]{subsubsection.3.2.2}{TextBox}{subsection.3.2}% 37
+\BOOKMARK [1][-]{section.4}{Evaluation}{}% 38
+\BOOKMARK [2][-]{subsection.4.1}{Objectives}{section.4}% 39
+\BOOKMARK [2][-]{subsection.4.2}{Future Improvements}{section.4}% 40
+\BOOKMARK [1][-]{section.5}{Glossary}{}% 41
