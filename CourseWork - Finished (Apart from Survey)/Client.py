@@ -767,6 +767,7 @@ def solve_through_tuples(group, replace_dummies):
         if indexes:
             change = remove_naked_tuples(group, indexes, values, function, replace_dummies)
         else:
+            indexes, values = function(numbers_appearance_by_index)
             if indexes:
                 change = remove_hidden_tuples(group, indexes, values, replace_dummies)
         if not change:

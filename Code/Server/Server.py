@@ -4,7 +4,6 @@ import mysql.connector
 
 # <editor-fold desc="Connection info">
 HOSTS = ["192.168.1.124", "86.166.206.240"]
-# HOST = "10.0.72.132"
 USER = "seedUpload"
 PASSWORD = "Lemon26"
 DB = 'SudokuDB'
@@ -57,8 +56,6 @@ def identical_trees(root1, root2):  # This will check if the two nodes have iden
 
 # <editor-fold desc="Code for interacting with the server">
 def generate_upload_grid(connection, table):
-    # cur.execute("desc " + table)
-    # print(cur.fetchall())
     db = connection[0]
     cur = connection[1]
     cur.execute("SELECT grid FROM " + table)
@@ -99,8 +96,6 @@ def establish_connection(connection_address):
     db.start_transaction(isolation_level='READ COMMITTED')
     cur = db.cursor(buffered=True)
     return [db, cur]
-
-# D:\Edward\CourseWork\Code\Server
 # </editor-fold>
 
 
@@ -110,6 +105,16 @@ def round_(num, factor):
 
 
 def place_cell(sudoku_grid, c=0):
+    """
+    This code places one digit into the cell indexed by the parameter c.
+    This function is called recursively to fill the entire grid.
+    Firstly a list of numbers 1 to 9 are shuffled.
+    The function checks whether the selected digit (Number) is in the row and then in the column.
+    If successful it tests to see whether the digit is in the sub-grid .
+    If all tests pass it set the value into the Suduko grid.
+    If the end of the grid has been reached the completed Sudoku grid is returned.
+    If any of the tests fail, the location in the grid is set to 'None' and the for loop continues.
+    """
     column_number, row_number = divmod(c, 9)  # returns column,row
     numbers = [count for count in range(1, 10)]
     random.shuffle(numbers)
@@ -137,6 +142,10 @@ def generate_completed_grid():
 
 # <editor-fold desc="Generate Keys code. Seen in the file of the same name.">
 def rotation(array, rotation_angle, length):  # uses matrix rotation
+    """
+    This code does matrix rotation of a Sudoku grid represented by a one-dimensional array (array) at $90^\circ$, $180^\circ$
+    or $270^\circ$ using the following formula.
+    """
     try:
         length = length[0]
     except (AttributeError, TypeError):
@@ -164,6 +173,10 @@ def rotation(array, rotation_angle, length):  # uses matrix rotation
 
 
 def turn(array, rotate_to, length):
+    """
+    The turn function uses the mapping function rotate\_to to create
+    a new one-dimensional array (rotated\_array) of the rotated values
+    """
     rotated_array = [None for _ in range((length + 1) ** 2)]
     for index, index_value in enumerate(array):
         y, x = divmod(index, length + 1)
@@ -174,6 +187,10 @@ def turn(array, rotate_to, length):
 
 
 def generate_key(grid):
+    """
+    This function creates a data structure that contains all the information to
+    match trivial versions of the passed Sudoku grid.
+    """
     full_list = []
     check_list = []
     for Index_Tile in range(0, 9):
@@ -216,12 +233,6 @@ def generate_seed(grid):
 # </editor-fold>
 
 # <editor-fold desc="Runs the code.">
-
-# if __name__ == "main":
-# while True:
-# run_server(CONNECTION)
-# print(node_to_list_grid(generate_seed(generate_completed_grid())))
-# exit()
 VERBOSE = str(input("Verbose? "))
 if VERBOSE.upper() == "TRUE" or VERBOSE.upper() == "T" or VERBOSE.upper() == "Y":
     VERBOSE = True
@@ -229,80 +240,4 @@ else:
     VERBOSE = False
 
 generate_upload_grid(establish_connection(CONNECTION), TABLE)
-# </editor-fold>
-
-
-# <editor-fold desc="Old code for running the server.">
-'''
-# client sends a message "Puzzle" to this ip (encryption)
-# add code to queue
-# This code responds with a seed (and seed index) from a file
-# client sends a file received message, timeouts exist.
-# Close connection
-# client sends "High score, seed index, Difficulty" to this ip (encryption)
-# add info to queue
-# server sends received, timeout exists back to client ip
-# client closes connection
-import socket
-# import os
-import threading
-# import pickle
-# import random
-from threading import Thread
-clients = set()
-clients_lock = threading.Lock()
-def get_puzzle():
-    """
-    Reads Puzzle file
-    gets largest index
-    generate random number between 0 and max index
-    Returns: Puzzle from index + index which it is from
-    """
-    pass
-def add_high_score(score, index):
-    """
-    Reads Puzzle file
-    find corresponding ID
-    write high score to collection of high scores
-    strips high score
-    generate random number between 0 and max index
-    """
-def listener(client, address):
-    print("Accepted connection from: ", address)
-    with clients_lock:  # client
-        clients.add(client)
-    try: 
-        while True:
-            data = client.recv(buff)
-            if not data:
-                break
-            elif data == "Puzzle":  # maybe encryption or something
-                client.sendall("Puzzle " + get_puzzle)
-                # send puzzle + ID
-                # waits for message back
-                # then close
-            elif "High score" in data:  # maybe encryption or something
-                # Receive data
-                add_high_score(get_puzzle())
-                client.sendall("RECEIVED")
-#                with clients_lock:
-#
-#                    for c in clients:
-#                        c.sendall(data)
-    finally:  # change this
-        with clients_lock:
-            clients.remove(client)
-            client.close()
-host, port, buff = "10.0.72.191", 6060, 128
-s = socket.socket()
-s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-s.bind((host, port))
-s.listen(3)
-th = []
-print("Server is listening for connections...")
-while True:
-    client, address = s.accept()
-    th.append(Thread(target=listener, args=(client, address)).start())  # this is a queue
-s.close()
-'''
 # </editor-fold>
