@@ -419,8 +419,7 @@ class SudokuGrid(pygame.Rect):
         a Sudoku puzzle by removing some tiles (generate problem)
         """
         self.set_grid_values(shuffle_grid(get_completed_grid_values()))
-        values = self.get_all_values()
-        # generate_problem(self)
+        generate_problem(self)
         for tile in self.grid:
             if not tile.get_editable():
                 tile.set_text_colour(pygame.Color(18, 151, 147))
